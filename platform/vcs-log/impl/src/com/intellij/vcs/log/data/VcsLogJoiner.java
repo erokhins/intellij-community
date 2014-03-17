@@ -124,7 +124,7 @@ public class VcsLogJoiner {
 
   private static Set<TimedVcsCommit> getAllNewCommits(@NotNull List<? extends TimedVcsCommit> unsafeGreenPartSavedLog,
                                                       @NotNull List<? extends TimedVcsCommit> firstBlock) {
-    Set<Hash> existedCommitHashes = new HashSet<Hash>();
+    Set<Hash> existedCommitHashes = ContainerUtil.newHashSet();
     for (VcsCommit commit : unsafeGreenPartSavedLog) {
       existedCommitHashes.add(commit.getHash());
     }

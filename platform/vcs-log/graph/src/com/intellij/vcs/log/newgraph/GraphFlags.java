@@ -17,23 +17,23 @@
 package com.intellij.vcs.log.newgraph;
 
 import com.intellij.vcs.log.newgraph.utils.Flags;
+import org.jetbrains.annotations.NotNull;
 
 public class GraphFlags {
-  private final int myNodesCount;
-  private final byte[] myFlags;
+  @NotNull private final byte[] myFlags;
 
   public GraphFlags(int nodesCount) {
-    myNodesCount = nodesCount;
     myFlags = new byte[nodesCount];
   }
 
+  @NotNull
   private Flags getFlags(int offset) {
     assert offset >= 0 && offset < 8;
     final int mask = 1 << offset;
     return new Flags() {
       @Override
       public int size() {
-        return myNodesCount;
+        return myFlags.length;
       }
 
       @Override
@@ -52,27 +52,33 @@ public class GraphFlags {
     };
   }
 
+  @NotNull
   public Flags getVisibleNodes() {
     return getFlags(1);
   }
 
+  @NotNull
   public Flags getVisibleNodesInBranches() {
     return getFlags(3);
   }
 
   // From node k exist only one edge to k + 1
+  @NotNull
   public Flags getSimpleNodeFlags() {
     return getFlags(0);
   }
 
+  @NotNull
   public Flags getThickFlags() {
     return getFlags(2);
   }
 
+  @NotNull
   public Flags getFlagsForFilters() {
     return getFlags(4);
   }
 
+  @NotNull
   public Flags getTempFlags() {
     return getFlags(5);
   }
