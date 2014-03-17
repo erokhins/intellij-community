@@ -50,10 +50,10 @@ public class VcsLogJoiner {
                                                            @NotNull Collection<VcsRef> newRefs) {
     Set<Hash> previousRefsHashes = toHashes(previousRefs);
     Set<Hash> newRefsHashes = toHashes(newRefs);
-    Pair<Integer, Set<Hash>> redCommitsAndSavedRedIndex =
-      getRedCommitsAndSavedRedIndex(savedLog, previousRefsHashes, firstBlock, newRefsHashes);
     Pair<Integer, Set<TimedVcsCommit>> newCommitsAndSavedGreenIndex =
       getNewCommitsAndSavedGreenIndex(savedLog, previousRefsHashes, firstBlock, newRefsHashes);
+    Pair<Integer, Set<Hash>> redCommitsAndSavedRedIndex =
+      getRedCommitsAndSavedRedIndex(savedLog, previousRefsHashes, firstBlock, newRefsHashes);
 
     if (redCommitsAndSavedRedIndex.first == -1) { // firstBlock not enough or remove old commits
       throw new IllegalStateException(); //todo
@@ -181,7 +181,7 @@ public class VcsLogJoiner {
       for (int lastIndex = 0; lastIndex < savedLog.size(); lastIndex++) {
         TimedVcsCommit commit = savedLog.get(lastIndex);
         if (lastIndex > BOUND_SAVED_LOG)
-          return -1;
+          return -1;            // todo throw reload everything
 
         boolean isGreen = currentGreen.contains(commit.getHash());
         if (isGreen) {
@@ -196,7 +196,7 @@ public class VcsLogJoiner {
         if (currentRed.isEmpty())
           return lastIndex + 1;
       }
-      return -1;
+      return -1;    // todo throw shouldn't happen (illegal data): reload everything
     }
 
     public Set<Hash> getAllRedCommit() {
