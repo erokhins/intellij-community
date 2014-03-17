@@ -178,8 +178,8 @@ public class VcsLogJoiner {
 
     // return -1 if something bad
     private int getFirstSaveIndex() {
-      int lastIndex = 0;
-      for (TimedVcsCommit commit : savedLog) {
+      for (int lastIndex = 0; lastIndex < savedLog.size(); lastIndex++) {
+        TimedVcsCommit commit = savedLog.get(lastIndex);
         if (lastIndex > BOUND_SAVED_LOG)
           return -1;
 
@@ -187,14 +187,14 @@ public class VcsLogJoiner {
         if (isGreen) {
           currentRed.remove(commit.getHash());
           currentGreen.addAll(commit.getParents());
-        } else {
+        }
+        else {
           markRealRedNode(commit.getHash());
           currentRed.addAll(commit.getParents());
         }
 
-        lastIndex++;
         if (currentRed.isEmpty())
-          return lastIndex;
+          return lastIndex + 1;
       }
       return -1;
     }
