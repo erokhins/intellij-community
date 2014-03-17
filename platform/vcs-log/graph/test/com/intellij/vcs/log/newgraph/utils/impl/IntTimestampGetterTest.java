@@ -23,9 +23,9 @@ import org.junit.Test;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.fail;
 
-public class ShortTimestampGetterTest {
+public class IntTimestampGetterTest {
 
-  private final static long SHORT_MAX = Short.MAX_VALUE;
+  private final static long INT_MAX = Integer.MAX_VALUE;
   private final static int BLOCK_SIZE = 3;
 
   private static TimestampGetter create(final long... timestamp) {
@@ -54,8 +54,8 @@ public class ShortTimestampGetterTest {
 
   protected void runTest(long ... timestamp) {
     TimestampGetter timestampGetter = create(timestamp);
-    ShortTimestampGetter shortTimestampGetter = ShortTimestampGetter.newInstance(timestampGetter, BLOCK_SIZE);
-    assertEquals(toStr(timestampGetter), toStr(shortTimestampGetter));
+    IntTimestampGetter intTimestampGetter = IntTimestampGetter.newInstance(timestampGetter, BLOCK_SIZE);
+    assertEquals(toStr(timestampGetter), toStr(intTimestampGetter));
   }
 
   @Test
@@ -88,15 +88,15 @@ public class ShortTimestampGetterTest {
   @Test
   public void oneTime() {
     runTest(1);
-    runTest(-SHORT_MAX);
-    runTest(SHORT_MAX);
+    runTest(-INT_MAX);
+    runTest(INT_MAX);
 
-    runTest(SHORT_MAX - 100);
-    runTest(SHORT_MAX - 1000);
+    runTest(INT_MAX - 100);
+    runTest(INT_MAX - 1000);
   }
 
   @Test
   public void overflow() {
-    runTest(1000, 1000 +  SHORT_MAX, SHORT_MAX, -SHORT_MAX, 100 * SHORT_MAX);
+    runTest(1000, 1000 + INT_MAX, INT_MAX, -INT_MAX, 100 * INT_MAX);
   }
 }

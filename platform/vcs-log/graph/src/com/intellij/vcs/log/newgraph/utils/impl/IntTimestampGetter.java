@@ -22,20 +22,20 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ShortTimestampGetter implements TimestampGetter {
+public class IntTimestampGetter implements TimestampGetter {
 
   public static final int DEFAULT_BLOCK_SIZE = 30;
 
-  private static final long MAX_DELTA = Short.MAX_VALUE - 10;
-  private static final short BROKEN_DELTA = Short.MAX_VALUE;
+  private static final long MAX_DELTA = Integer.MAX_VALUE - 10;
+  private static final int BROKEN_DELTA = Integer.MAX_VALUE;
 
   @NotNull
-  public static ShortTimestampGetter newInstance(@NotNull TimestampGetter delegateGetter) {
+  public static IntTimestampGetter newInstance(@NotNull TimestampGetter delegateGetter) {
     return newInstance(delegateGetter, DEFAULT_BLOCK_SIZE);
   }
 
   @NotNull
-  public static ShortTimestampGetter newInstance(@NotNull TimestampGetter delegateGetter, int blockSize) {
+  public static IntTimestampGetter newInstance(@NotNull TimestampGetter delegateGetter, int blockSize) {
     if (delegateGetter.size() == 0)
       throw new IllegalArgumentException("Empty TimestampGetter not supported");
 
@@ -44,31 +44,31 @@ public class ShortTimestampGetter implements TimestampGetter {
       saveTimestamps[i] = delegateGetter.getTimestamp(blockSize * i);
 
     Map<Integer, Long> brokenDeltas = new HashMap<Integer, Long>();
-    short[] deltas = new short[delegateGetter.size() - 1];
+    int[] deltas = new int[delegateGetter.size() - 1];
 
     for (int i = 0; i < delegateGetter.size() - 1; i++) {
       long delta = delegateGetter.getTimestamp(i + 1) - delegateGetter.getTimestamp(i);
-      short shortDelta = deltaToShort(delta);
-      deltas[i] = shortDelta;
-      if (shortDelta == BROKEN_DELTA)
+      int intDelta = deltaToInt(delta);
+      deltas[i] = intDelta;
+      if (intDelta == BROKEN_DELTA)
         brokenDeltas.put(i, delta);
     }
 
-    return new ShortTimestampGetter(deltas, blockSize, saveTimestamps, brokenDeltas);
+    return new IntTimestampGetter(deltas, blockSize, saveTimestamps, brokenDeltas);
   }
 
-  private static short deltaToShort(long delta) {
+  private static int deltaToInt(long delta) {
     if (delta >= 0 && delta <= MAX_DELTA)
-      return (short)delta;
+      return (int)delta;
 
     if (delta < 0 && -delta <= MAX_DELTA)
-      return (short)delta;
+      return (int)delta;
 
     return BROKEN_DELTA;
   }
 
   // myDeltas[i] = getTimestamp(i + 1) - getTimestamp(i)
-  private final short[] myDeltas;
+  private final int[] myDeltas;
 
   @NotNull
   private final Map<Integer, Long> myBrokenDeltas;
@@ -78,11 +78,11 @@ public class ShortTimestampGetter implements TimestampGetter {
   // saved 0, blockSize, 2 * blockSize, etc.
   private final long[] mySaveTimestamps;
 
-  public ShortTimestampGetter(short[] deltas, int blockSize, long[] saveTimestamps, @NotNull Map<Integer, Long> brokenDeltas) {
+  public IntTimestampGetter(int[] deltas, int blockSize, long[] saveTimestamps, @NotNull Map<Integer, Long> brokenDeltas) {
     myDeltas = deltas;
     myBlockSize = blockSize;
     mySaveTimestamps = saveTimestamps;
-    this.myBrokenDeltas = brokenDeltas;
+    myBrokenDeltas = brokenDeltas;
   }
 
   @Override
@@ -102,7 +102,7 @@ public class ShortTimestampGetter implements TimestampGetter {
   }
 
   private long getDelta(int index) {
-    short delta = myDeltas[index];
+    int delta = myDeltas[index];
     if (delta != BROKEN_DELTA)
       return delta;
 
