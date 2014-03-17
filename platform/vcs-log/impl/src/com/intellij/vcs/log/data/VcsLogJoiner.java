@@ -110,14 +110,14 @@ public class VcsLogJoiner {
   }
 
   private static int getFirstUnTrackedIndex(@NotNull List<? extends TimedVcsCommit> commits, @NotNull Set<Hash> searchHashes) {
-    int lastIndex = 0;
-    for (VcsCommit commit : commits) {
+    int lastIndex;
+    for (lastIndex = 0; lastIndex < commits.size(); lastIndex++) {
+      VcsCommit commit = commits.get(lastIndex);
       if (searchHashes.size() == 0)
         return lastIndex;
       if (lastIndex > BOUND_SAVED_LOG)
-        return -1;
+        return -1; // todo throw reload all
       searchHashes.remove(commit.getHash());
-      lastIndex++;
     }
     return searchHashes.size() == 0 ? lastIndex : -1;
   }
