@@ -14,8 +14,20 @@
  * limitations under the License.
  */
 
-package com.intellij.vcs.log.newgraph.api.graph;
+package com.intellij.vcs.log.newgraph.api.graph.elements;
 
-public interface LinearGraphWithElementsInfo extends LinearGraph {
+public class GraphNode implements GraphElement {
+  private final int nodeIndex;
 
+  public GraphNode(int nodeIndex) {
+    this.nodeIndex = nodeIndex;
+  }
+
+  public int getNodeIndex() {
+    return nodeIndex;
+  }
+
+  public enum Type {
+    USUAL
+  }
 }
