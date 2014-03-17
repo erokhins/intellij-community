@@ -172,7 +172,7 @@ public class VcsLogJoiner {
     }
 
     private void markRealRedNode(@NotNull Hash node) {
-      assert currentRed.remove(node) : "Red node isn't marked as red";
+      assert currentRed.remove(node) : "Red node isn't marked as red";  // TODO not enough
       allRedCommit.add(node);
     }
 
@@ -183,7 +183,7 @@ public class VcsLogJoiner {
         if (lastIndex > BOUND_SAVED_LOG)
           return -1;
 
-        boolean isGreen = currentGreen.remove(commit.getHash());
+        boolean isGreen = currentGreen.contains(commit.getHash());
         if (isGreen) {
           currentRed.remove(commit.getHash());
           currentGreen.addAll(commit.getParents());
@@ -205,7 +205,7 @@ public class VcsLogJoiner {
   }
 
 
-  /*package*/ static class NewCommitIntegrator<Commit extends TimedVcsCommit> {
+  static class NewCommitIntegrator<Commit extends TimedVcsCommit> {
     private final List<Commit> list;
     private final Map<Hash, Commit> newCommitsMap;
 
@@ -255,6 +255,7 @@ public class VcsLogJoiner {
       }
     }
 
+    @NotNull
     public List<Commit> getResultList() {
       insertAllUseStack();
       return list;
