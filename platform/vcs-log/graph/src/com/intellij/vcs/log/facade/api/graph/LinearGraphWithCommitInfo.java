@@ -13,21 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.intellij.vcs.log.facade.api.graph;
 
-package com.intellij.vcs.log.newgraph.api.graph;
+/**
+ * @author erokhins
+ */
+public interface LinearGraphWithCommitInfo extends LinearGraph {
 
-import com.intellij.vcs.log.newgraph.api.graph.elements.GraphEdge;
-import com.intellij.vcs.log.newgraph.api.graph.elements.GraphNode;
-import org.jetbrains.annotations.NotNull;
-
-public interface PrintedLinearGraph extends LinearGraph {
-
-  int getLayoutIndex(int nodeIndex);
-
-  @NotNull
-  GraphNode.Type getNodeType(@NotNull GraphNode node);
-
-  @NotNull
-  GraphEdge.Type getEdgeType(@NotNull GraphEdge edge);
+  // nodeIndex >= 0 && node nodeIndex < nodesCount()
+  int getHashIndex(int nodeIndex);
+  long getTimestamp(int nodeIndex);
 
 }

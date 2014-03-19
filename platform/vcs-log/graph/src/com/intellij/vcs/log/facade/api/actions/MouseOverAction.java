@@ -13,27 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.intellij.vcs.log.newgraph.api.graph;
+package com.intellij.vcs.log.facade.api.actions;
 
+import com.intellij.vcs.log.graph.GraphAction;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
+import java.awt.*;
 
-public interface LinearGraph {
-  int NOT_LOAD_COMMIT = Integer.MAX_VALUE;
+public class MouseOverAction implements GraphAction {
 
-  int nodesCount();
+  private final int myVisibleRow;
+  @NotNull private final Point myRelativePoint;
+
+  public MouseOverAction(int visibleRow, @NotNull Point relativePoint) {
+    myVisibleRow = visibleRow;
+    myRelativePoint = relativePoint;
+  }
+
+  public int getRow() {
+    return myVisibleRow;
+  }
 
   @NotNull
-  List<Integer> getUpNodes(int nodeIndex);
-
-  /**
-   *
-   * @param nodeIndex
-   * @return list adjacent nodes, which index > nodeIndex.
-   * If one of adjacent node wasn't load, it nodeIndex = NOT_LOAD_COMMIT
-   */
-  @NotNull
-  List<Integer> getDownNodes(int nodeIndex);
+  public Point getRelativePoint() {
+    return myRelativePoint;
+  }
 
 }

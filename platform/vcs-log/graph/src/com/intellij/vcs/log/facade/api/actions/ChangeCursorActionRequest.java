@@ -13,21 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.intellij.vcs.log.facade.api.actions;
 
-package com.intellij.vcs.log.newgraph.api.graph.elements;
+import com.intellij.vcs.log.graph.GraphActionRequest;
+import org.jetbrains.annotations.NotNull;
 
-public class GraphNode implements GraphElement {
-  private final int nodeIndex;
+import java.awt.*;
 
-  public GraphNode(int nodeIndex) {
-    this.nodeIndex = nodeIndex;
+public class ChangeCursorActionRequest implements GraphActionRequest {
+  @NotNull private final Cursor myCursor;
+
+  public ChangeCursorActionRequest(@NotNull Cursor cursor) {
+    myCursor = cursor;
   }
 
-  public int getNodeIndex() {
-    return nodeIndex;
-  }
-
-  public enum Type {
-    USUAL
+  @NotNull
+  public Cursor getCursor() {
+    return myCursor;
   }
 }

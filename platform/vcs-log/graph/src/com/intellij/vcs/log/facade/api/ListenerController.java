@@ -13,10 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.intellij.vcs.log.newgraph.api.graph.elements;
 
-/**
- * @author erokhins
- */
-public interface GraphElement {
+package com.intellij.vcs.log.facade.api;
+
+import org.jetbrains.annotations.NotNull;
+
+public interface ListenerController<Listener> {
+  void addListener(@NotNull Listener listener);
+
+  void removeListener(@NotNull Listener listener);
+
+  void removeAllListeners();
 }

@@ -14,27 +14,20 @@
  * limitations under the License.
  */
 
-package com.intellij.vcs.log.newgraph.api.graph.elements;
+package com.intellij.vcs.log.facade.api.graph;
 
-public class GraphEdge implements GraphElement {
-  private final int upNodeIndex;
-  private final int downNodeIndex;
+import com.intellij.vcs.log.facade.api.graph.elements.GraphNode;
+import com.intellij.vcs.log.facade.api.graph.elements.GraphEdge;
+import org.jetbrains.annotations.NotNull;
 
-  public GraphEdge(int upNodeIndex, int downNodeIndex) {
-    this.upNodeIndex = upNodeIndex;
-    this.downNodeIndex = downNodeIndex;
-  }
+public interface PrintedLinearGraph extends LinearGraph {
 
-  public int getUpNodeIndex() {
-    return upNodeIndex;
-  }
+  int getLayoutIndex(int nodeIndex);
 
-  public int getDownNodeIndex() {
-    return downNodeIndex;
-  }
+  @NotNull
+  GraphNode.Type getNodeType(@NotNull GraphNode node);
 
-  public enum Type {
-    USUAL,
-    HIDE
-  }
+  @NotNull
+  GraphEdge.Type getEdgeType(@NotNull GraphEdge edge);
+
 }

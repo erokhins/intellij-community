@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.intellij.vcs.log.newgraph.api.graph;
+package com.intellij.vcs.log.facade.api.graph;
 
-import com.intellij.vcs.log.newgraph.api.ListenerController;
+import com.intellij.vcs.log.facade.api.ListenerController;
 import org.jetbrains.annotations.NotNull;
 
 /**

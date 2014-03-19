@@ -13,15 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.intellij.vcs.log.facade.api.actions;
 
-package com.intellij.vcs.log.newgraph.api;
+import com.intellij.vcs.log.graph.GraphAction;
+import org.jetbrains.annotations.Nullable;
 
-import org.jetbrains.annotations.NotNull;
+import java.awt.*;
 
-public interface ListenerController<Listener> {
-  void addListener(@NotNull Listener listener);
+public class ClickGraphAction implements GraphAction {
 
-  void removeListener(@NotNull Listener listener);
+  private final int myVisibleRow;
+  @Nullable private final Point myRelativePoint;
 
-  void removeAllListeners();
+  public ClickGraphAction(int visibleRow, @Nullable Point relativePoint) {
+    myVisibleRow = visibleRow;
+    myRelativePoint = relativePoint;
+  }
+
+  public int getRow() {
+    return myVisibleRow;
+  }
+
+  @Nullable
+  public Point getRelativePoint() {
+    return myRelativePoint;
+  }
+
 }

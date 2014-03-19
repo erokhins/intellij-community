@@ -13,15 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.intellij.vcs.log.newgraph.api.graph;
+package com.intellij.vcs.log.facade.api.graph.elements;
 
 /**
  * @author erokhins
  */
-public interface LinearGraphWithCommitInfo extends LinearGraph {
-
-  // nodeIndex >= 0 && node nodeIndex < nodesCount()
-  int getHashIndex(int nodeIndex);
-  long getTimestamp(int nodeIndex);
-
+public interface GraphElement {
 }

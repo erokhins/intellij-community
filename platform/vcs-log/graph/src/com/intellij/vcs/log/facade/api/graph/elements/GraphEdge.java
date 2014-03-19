@@ -13,29 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.intellij.vcs.log.graph;
 
-import org.jetbrains.annotations.Nullable;
+package com.intellij.vcs.log.facade.api.graph.elements;
 
-import java.awt.*;
+public class GraphEdge implements GraphElement {
+  private final int upNodeIndex;
+  private final int downNodeIndex;
 
-public class ClickGraphAction implements GraphAction {
-
-  private final int myVisibleRow;
-  @Nullable private final Point myRelativePoint;
-
-  public ClickGraphAction(int visibleRow, @Nullable Point relativePoint) {
-    myVisibleRow = visibleRow;
-    myRelativePoint = relativePoint;
+  public GraphEdge(int upNodeIndex, int downNodeIndex) {
+    this.upNodeIndex = upNodeIndex;
+    this.downNodeIndex = downNodeIndex;
   }
 
-  public int getRow() {
-    return myVisibleRow;
+  public int getUpNodeIndex() {
+    return upNodeIndex;
   }
 
-  @Nullable
-  public Point getRelativePoint() {
-    return myRelativePoint;
+  public int getDownNodeIndex() {
+    return downNodeIndex;
   }
 
+  public enum Type {
+    USUAL,
+    HIDE
+  }
 }
