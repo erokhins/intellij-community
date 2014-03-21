@@ -15,15 +15,25 @@
  */
 package com.intellij.vcs.log.facade.api.graph;
 
+import com.intellij.vcs.log.facade.api.graph.elements.GraphEdge;
+import com.intellij.vcs.log.facade.api.graph.elements.GraphNode;
 import com.intellij.vcs.log.facade.utils.ListenerController;
 import org.jetbrains.annotations.NotNull;
 
 /**
+ * Int this interface all nodeIndexes is indexes in PermanentGraph.
+ *
  * @author erokhins
  */
-public interface LinearGraphWithHiddenNodes extends PrintedLinearGraph {
+public interface LinearGraphWithHiddenNodes extends LinearGraph {
 
-  boolean nodeIsVisible(int index);
+  boolean nodeIsVisible(int nodeIndex);
+
+  @NotNull
+  GraphNode.Type getNodeType(int nodeIndex);
+
+  @NotNull
+  GraphEdge.Type getEdgeType(int upNodeIndex, int downNodeIndex);
 
   @NotNull
   ListenerController<UpdateListener> getListenerController();
