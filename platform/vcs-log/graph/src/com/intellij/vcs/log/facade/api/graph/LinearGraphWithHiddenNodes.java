@@ -15,7 +15,7 @@
  */
 package com.intellij.vcs.log.facade.api.graph;
 
-import com.intellij.vcs.log.facade.api.ListenerController;
+import com.intellij.vcs.log.facade.utils.ListenerController;
 import org.jetbrains.annotations.NotNull;
 
 /**

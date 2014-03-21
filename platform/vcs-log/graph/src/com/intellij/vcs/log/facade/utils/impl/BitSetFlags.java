@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-package com.intellij.vcs.log.facade.utils;
+package com.intellij.vcs.log.facade.utils.impl;
 
+import com.intellij.vcs.log.facade.utils.Flags;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.BitSet;

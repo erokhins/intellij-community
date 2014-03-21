@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.intellij.vcs.log.facade.api;
+package com.intellij.vcs.log.facade.utils.impl;
 
 import com.intellij.util.Consumer;
 import com.intellij.util.containers.HashSet;
+import com.intellij.vcs.log.facade.utils.ListenerController;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Set;
