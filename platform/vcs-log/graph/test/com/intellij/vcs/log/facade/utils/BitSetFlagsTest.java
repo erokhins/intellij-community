@@ -16,6 +16,7 @@
 
 package com.intellij.vcs.log.facade.utils;
 
+import com.intellij.vcs.log.facade.utils.impl.BitSetFlags;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 

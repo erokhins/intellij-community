@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.intellij.vcs.log.facade.api;
+package com.intellij.vcs.log.facade.utils;
 
 import org.jetbrains.annotations.NotNull;
 
