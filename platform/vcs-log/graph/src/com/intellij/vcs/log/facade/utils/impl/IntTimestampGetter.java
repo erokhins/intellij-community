@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package com.intellij.vcs.log.newgraph.utils.impl;
+package com.intellij.vcs.log.facade.utils.impl;
 
-import com.intellij.vcs.log.newgraph.utils.TimestampGetter;
+import com.intellij.vcs.log.facade.utils.TimestampGetter;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
