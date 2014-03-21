@@ -61,7 +61,7 @@ public class BitSetFlags implements Flags {
     if (index < 0)
       throw new IndexOutOfBoundsException("index < 0:" + index);
     if (index >= mySize)
-      throw new IndexOutOfBoundsException("index: " + index + " >= mySize: " + mySize);
+      throw new IndexOutOfBoundsException("index: " + index + " >= size: " + size());
   }
 
 

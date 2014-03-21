@@ -36,6 +36,8 @@ public class IntTimestampGetter implements TimestampGetter {
 
   @NotNull
   public static IntTimestampGetter newInstance(@NotNull TimestampGetter delegateGetter, int blockSize) {
+    if (delegateGetter.size() < 0)
+      throw new NegativeArraySizeException("delegateGetter.size() < 0: " + delegateGetter.size());
     if (delegateGetter.size() == 0)
       throw new IllegalArgumentException("Empty TimestampGetter not supported");
 
@@ -92,6 +94,7 @@ public class IntTimestampGetter implements TimestampGetter {
 
   @Override
   public long getTimestamp(int index) {
+    checkRange(index);
     int relativeSaveIndex = index / myBlockSize;
     long timestamp = mySaveTimestamps[relativeSaveIndex];
     for (int i = myBlockSize * relativeSaveIndex; i < index; i++) {
@@ -107,5 +110,12 @@ public class IntTimestampGetter implements TimestampGetter {
       return delta;
 
     return myBrokenDeltas.get(index);
+  }
+
+  private void checkRange(int index) {
+    if (index < 0)
+      throw new IndexOutOfBoundsException("index < 0:" + index);
+    if (index >= size())
+      throw new IndexOutOfBoundsException("index: " + index + " >= size: " + size());
   }
 }
