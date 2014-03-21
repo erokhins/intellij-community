@@ -21,7 +21,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * @author erokhins
  */
-public interface LinearGraphWithHiddenNodes extends LinearGraph {
+public interface LinearGraphWithHiddenNodes extends PrintedLinearGraph {
 
   boolean nodeIsVisible(int index);
 

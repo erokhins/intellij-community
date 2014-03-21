@@ -18,7 +18,7 @@ package com.intellij.vcs.log.facade.api.graph;
 /**
  * @author erokhins
  */
-public interface LinearGraphWithCommitInfo extends LinearGraph {
+public interface LinearGraphWithCommitInfo extends PrintedLinearGraph {
 
   // nodeIndex >= 0 && node nodeIndex < nodesCount()
   int getHashIndex(int nodeIndex);
