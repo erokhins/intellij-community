@@ -39,7 +39,7 @@ public class ListIntToIntMap extends AbstractUpdatableIntToIntMap {
     if (longSize < 1)
       throw new IllegalArgumentException("Unsupported size: " + longSize);
 
-    int sumSize = longSize / blockSize + 1;
+    int sumSize = (longSize - 1) / blockSize + 1;
     ListIntToIntMap listIntToIntMap = new ListIntToIntMap(thisIsVisible, longSize, blockSize, new int[sumSize]);
     listIntToIntMap.update(0, longSize - 1);
     return listIntToIntMap;

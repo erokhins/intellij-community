@@ -16,6 +16,7 @@
 
 package com.intellij.vcs.log.facade.graph.permanent;
 
+import com.intellij.vcs.log.facade.utils.impl.CompressedIntDataList;
 import com.intellij.vcs.log.newgraph.PermanentGraph;
 import com.intellij.vcs.log.newgraph.PermanentGraphLayout;
 import com.intellij.vcs.log.newgraph.SomeGraph;
@@ -108,20 +109,20 @@ public class PermanentGraphLayoutBuilder {
 
 
   private static class PermanentGraphLayoutImpl implements PermanentGraphLayout {
-    private final int[] myLayoutIndex;
+    private final CompressedIntDataList myLayoutIndex;
 
     private final List<Integer> myHeadNodeIndex;
     private final int[] myStartLayoutIndexForHead;
 
     private PermanentGraphLayoutImpl(int[] layoutIndex, List<Integer> headNodeIndex, int[] startLayoutIndexForHead) {
-      myLayoutIndex = layoutIndex;
+      myLayoutIndex = CompressedIntDataList.newInstance(layoutIndex);
       myHeadNodeIndex = headNodeIndex;
       myStartLayoutIndexForHead = startLayoutIndexForHead;
     }
 
     @Override
     public int getLayoutIndex(int nodeIndex) {
-      return myLayoutIndex[nodeIndex];
+      return myLayoutIndex.get(nodeIndex);
     }
 
     @Override

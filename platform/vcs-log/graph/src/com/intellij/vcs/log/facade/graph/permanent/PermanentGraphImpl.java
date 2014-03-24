@@ -17,6 +17,7 @@
 package com.intellij.vcs.log.facade.graph.permanent;
 
 import com.intellij.util.SmartList;
+import com.intellij.vcs.log.facade.utils.impl.CompressedIntDataList;
 import com.intellij.vcs.log.newgraph.PermanentGraph;
 import com.intellij.vcs.log.facade.utils.Flags;
 import org.jetbrains.annotations.NotNull;
@@ -27,17 +28,17 @@ import java.util.List;
 
 public class PermanentGraphImpl implements PermanentGraph {
   private final Flags mySimpleNodes;
-  private final int[] myNodeToHashIndex;
+  private final CompressedIntDataList myNodeToHashIndex;
 
   // myNodeToEdgeIndex.length = nodesCount() + 1. See adjacentNodes().
-  private final int[] myNodeToEdgeIndex;
-  private final int[] myLongEdges;
+  private final CompressedIntDataList myNodeToEdgeIndex;
+  private final CompressedIntDataList myLongEdges;
 
   /*package*/ PermanentGraphImpl(Flags simpleNodes, int[] nodeToHashIndex, int[] nodeToEdgeIndex, int[] longEdges) {
     mySimpleNodes = simpleNodes;
-    myNodeToHashIndex = nodeToHashIndex;
-    myNodeToEdgeIndex = nodeToEdgeIndex;
-    myLongEdges = longEdges;
+    myNodeToHashIndex = CompressedIntDataList.newInstance(nodeToHashIndex);
+    myNodeToEdgeIndex = CompressedIntDataList.newInstance(nodeToEdgeIndex);
+    myLongEdges = CompressedIntDataList.newInstance(longEdges);
   }
 
   @Override
@@ -47,17 +48,17 @@ public class PermanentGraphImpl implements PermanentGraph {
 
   @NotNull
   private List<Integer> adjacentNodes(final int nodeIndex) {
-    final int startIndex = myNodeToEdgeIndex[nodeIndex];
+    final int startIndex = myNodeToEdgeIndex.get(nodeIndex);
 
     return new AbstractList<Integer>() {
       @Override
       public Integer get(int index) {
-        return myLongEdges[startIndex + index];
+        return myLongEdges.get(startIndex + index);
       }
 
       @Override
       public int size() {
-          return myNodeToEdgeIndex[nodeIndex + 1] - startIndex;
+          return myNodeToEdgeIndex.get(nodeIndex + 1) - startIndex;
       }
     };
   }
@@ -99,6 +100,6 @@ public class PermanentGraphImpl implements PermanentGraph {
   public int getHashIndex(int nodeIndex) {
     if (nodeIndex == nodesCount())
       return NOT_LOAD_COMMIT;
-    return myNodeToHashIndex[nodeIndex];
+    return myNodeToHashIndex.get(nodeIndex);
   }
 }

@@ -62,6 +62,8 @@ public class IntDeltaCompressor {
 
   // [left, right)
   public int getSumOfInterval(int left, int right) {
+    if (left == right)
+      return 0;
     int startIndex = myStartIndexMap.getLongIndex(left);
     int sum = 0;
     for (int i = 0; i < right - left; i++) {
@@ -116,7 +118,7 @@ public class IntDeltaCompressor {
     }
 
     public static void writeDelta(int startIndex, int value, int sizeOf, byte[] bytes) {
-      for (int i = sizeOf - 1; i >= 0; i++) {
+      for (int i = sizeOf - 1; i >= 0; i--) {
         bytes[startIndex + i] = (byte) value;
         value >>= BYTE_OFFSET;
       }
