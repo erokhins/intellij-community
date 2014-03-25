@@ -16,6 +16,7 @@
 
 package com.intellij.vcs.log.facade.utils.impl;
 
+import com.intellij.vcs.log.facade.utils.IntList;
 import com.intellij.vcs.log.facade.utils.TimestampGetter;
 import org.jetbrains.annotations.NotNull;
 
@@ -70,7 +71,7 @@ public class IntTimestampGetter implements TimestampGetter {
   }
 
   // myDeltas[i] = getTimestamp(i + 1) - getTimestamp(i)
-  private final int[] myDeltas;
+  private final IntList myDeltas;
 
   @NotNull
   private final Map<Integer, Long> myBrokenDeltas;
@@ -81,7 +82,7 @@ public class IntTimestampGetter implements TimestampGetter {
   private final long[] mySaveTimestamps;
 
   public IntTimestampGetter(int[] deltas, int blockSize, long[] saveTimestamps, @NotNull Map<Integer, Long> brokenDeltas) {
-    myDeltas = deltas;
+    myDeltas = CompressedIntList.newInstance(deltas);
     myBlockSize = blockSize;
     mySaveTimestamps = saveTimestamps;
     myBrokenDeltas = brokenDeltas;
@@ -89,7 +90,7 @@ public class IntTimestampGetter implements TimestampGetter {
 
   @Override
   public int size() {
-    return myDeltas.length + 1;
+    return myDeltas.size() + 1;
   }
 
   @Override
@@ -105,7 +106,7 @@ public class IntTimestampGetter implements TimestampGetter {
   }
 
   private long getDelta(int index) {
-    int delta = myDeltas[index];
+    int delta = myDeltas.get(index);
     if (delta != BROKEN_DELTA)
       return delta;
 
