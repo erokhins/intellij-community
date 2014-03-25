@@ -17,7 +17,9 @@
 package com.intellij.vcs.log.facade.graph.permanent;
 
 import com.intellij.util.SmartList;
+import com.intellij.vcs.log.facade.utils.IntDataList;
 import com.intellij.vcs.log.facade.utils.impl.CompressedIntDataList;
+import com.intellij.vcs.log.facade.utils.impl.FullIntDataList;
 import com.intellij.vcs.log.newgraph.PermanentGraph;
 import com.intellij.vcs.log.facade.utils.Flags;
 import org.jetbrains.annotations.NotNull;
@@ -28,17 +30,17 @@ import java.util.List;
 
 public class PermanentGraphImpl implements PermanentGraph {
   private final Flags mySimpleNodes;
-  private final CompressedIntDataList myNodeToHashIndex;
+  private final IntDataList myNodeToHashIndex;
 
   // myNodeToEdgeIndex.length = nodesCount() + 1. See adjacentNodes().
-  private final CompressedIntDataList myNodeToEdgeIndex;
-  private final CompressedIntDataList myLongEdges;
+  private final IntDataList myNodeToEdgeIndex;
+  private final IntDataList myLongEdges;
 
   /*package*/ PermanentGraphImpl(Flags simpleNodes, int[] nodeToHashIndex, int[] nodeToEdgeIndex, int[] longEdges) {
     mySimpleNodes = simpleNodes;
     myNodeToHashIndex = CompressedIntDataList.newInstance(nodeToHashIndex);
     myNodeToEdgeIndex = CompressedIntDataList.newInstance(nodeToEdgeIndex);
-    myLongEdges = CompressedIntDataList.newInstance(longEdges);
+    myLongEdges = new FullIntDataList(longEdges);
   }
 
   @Override

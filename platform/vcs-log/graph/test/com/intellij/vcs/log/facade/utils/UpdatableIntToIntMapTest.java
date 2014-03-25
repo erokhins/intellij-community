@@ -196,4 +196,10 @@ public abstract class UpdatableIntToIntMapTest {
 
     tester.testLongToShort("0|1");
   }
+
+  @Test
+  public void emptyTest() {
+    Tester tester = getTest(0, "");
+    tester.testLongToShort("");
+  }
 }

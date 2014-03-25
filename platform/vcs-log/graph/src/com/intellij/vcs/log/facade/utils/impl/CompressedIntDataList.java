@@ -20,16 +20,18 @@ import com.intellij.vcs.log.facade.utils.IntDataList;
 import org.jetbrains.annotations.NotNull;
 
 public class CompressedIntDataList implements IntDataList {
-  public static final int DEFAULT_BLOCK_SIZE = 20;
+  public static final int DEFAULT_BLOCK_SIZE = 30;
 
   @NotNull
-  public static CompressedIntDataList newInstance(final int[] delegateArray) {
+  public static IntDataList newInstance(final int[] delegateArray) {
     return newInstance(delegateArray, DEFAULT_BLOCK_SIZE);
   }
 
   @NotNull
-  public static CompressedIntDataList newInstance(final int[] delegateArray, int blockSize) {
-    long ts = System.currentTimeMillis();
+  public static IntDataList newInstance(final int[] delegateArray, int blockSize) {
+    if (blockSize  < 1) throw new IllegalArgumentException("Unsupported blockSize:" + blockSize);
+
+    if (delegateArray.length == 0) return new FullIntDataList(delegateArray);
 
     IntDeltaCompressor intDeltaCompressor = IntDeltaCompressor.newInstance(new IntDataList() {
       @Override
@@ -47,10 +49,7 @@ public class CompressedIntDataList implements IntDataList {
     for (int i = 0; i < strongValues.length; i++)
       strongValues[i] = delegateArray[i * blockSize];
 
-    CompressedIntDataList compressedIntDataList = new CompressedIntDataList(blockSize, strongValues, intDeltaCompressor);
-
-    System.out.println(System.currentTimeMillis() - ts);
-    return compressedIntDataList;
+    return new CompressedIntDataList(blockSize, strongValues, intDeltaCompressor);
   }
 
   private final int myBlockSize;

@@ -22,10 +22,13 @@ import com.intellij.vcs.log.facade.utils.IntDataList;
 import com.intellij.vcs.log.facade.utils.IntToIntMap;
 import org.jetbrains.annotations.NotNull;
 
-public class IntDeltaCompressor {
+/*package*/ class IntDeltaCompressor {
 
   @NotNull
   public static IntDeltaCompressor newInstance(@NotNull IntDataList deltaList) {
+    if (deltaList.size() < 0)
+      throw new NegativeArraySizeException("size < 0: " + deltaList.size());
+
     int bytesAfterCompression = IntDeltaUtils.countBytesAfterCompression(deltaList);
     Flags startedDeltaIndex = new BitSetFlags(bytesAfterCompression);
     byte[] compressedDeltas = new byte[bytesAfterCompression];
@@ -62,8 +65,11 @@ public class IntDeltaCompressor {
 
   // [left, right)
   public int getSumOfInterval(int left, int right) {
-    if (left == right)
+    if (left < 0 || left > right || right > size())
+      throw new IllegalArgumentException("Size is: " + size() + ", but interval is: (" + left +", " + right + ")");
+    if (left == size())
       return 0;
+
     int startIndex = myStartIndexMap.getLongIndex(left);
     int sum = 0;
     for (int i = 0; i < right - left; i++) {
@@ -75,6 +81,9 @@ public class IntDeltaCompressor {
   }
 
   public int get(int index) {
+    if (index < 0 || index >= size())
+      throw new IllegalArgumentException("Size is: " + size() + ", but index is: " + index);
+
     int startIndex = myStartIndexMap.getLongIndex(index);
     int sizeOf = getNextStartIndex(startIndex) - startIndex;
     return IntDeltaUtils.readDelta(startIndex, sizeOf, myCompressedDeltas);
