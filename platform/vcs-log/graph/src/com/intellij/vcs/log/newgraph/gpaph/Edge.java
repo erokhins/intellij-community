@@ -31,4 +31,7 @@ public interface Edge extends GraphElement {
     USUAL,
     HIDE_FRAGMENT
   }
+
+  int upLayoutIndex();
+  int downLayoutIndex();
 }

@@ -25,13 +25,15 @@ public class EdgeImpl implements Edge {
   @NotNull
   private final Type myType;
 
-  private final int myLayoutIndex;
+  private final int upLayoutIndex;
+  private final int downLayoutIndex;
 
-  public EdgeImpl(int upVisibleIndex, int downVisibleIndex, @NotNull Type type, int layoutIndex) {
+  public EdgeImpl(int upVisibleIndex, int downVisibleIndex, @NotNull Type type, int upLayoutIndex, int downLayoutIndex) {
     myUpVisibleIndex = upVisibleIndex;
     myDownVisibleIndex = downVisibleIndex;
     myType = type;
-    myLayoutIndex = layoutIndex;
+    this.upLayoutIndex = upLayoutIndex;
+    this.downLayoutIndex = downLayoutIndex;
   }
 
   @Override
@@ -51,8 +53,18 @@ public class EdgeImpl implements Edge {
   }
 
   @Override
+  public int upLayoutIndex() {
+    return upLayoutIndex;
+  }
+
+  @Override
+  public int downLayoutIndex() {
+    return downLayoutIndex;
+  }
+
+  @Override
   public int getLayoutIndex() {
-    return myLayoutIndex;
+    return Math.max(upLayoutIndex, downLayoutIndex);
   }
 
   @Override
@@ -63,7 +75,6 @@ public class EdgeImpl implements Edge {
     EdgeImpl edge = (EdgeImpl)o;
 
     if (myDownVisibleIndex != edge.myDownVisibleIndex) return false;
-    if (myLayoutIndex != edge.myLayoutIndex) return false;
     if (myUpVisibleIndex != edge.myUpVisibleIndex) return false;
     if (myType != edge.myType) return false;
 
@@ -75,7 +86,6 @@ public class EdgeImpl implements Edge {
     int result = myUpVisibleIndex;
     result = 31 * result + myDownVisibleIndex;
     result = 31 * result + myType.hashCode();
-    result = 31 * result + myLayoutIndex;
     return result;
   }
 }

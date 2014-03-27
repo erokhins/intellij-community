@@ -108,8 +108,15 @@ public abstract class MutableGraphWithHiddenNodes<T extends GraphWithElementsInf
         upNodeIndex = startNodeIndex;
       }
       Edge.Type type = myGraph.getEdgeType(upNodeIndex, downNodeIndex);
-      int layoutIndex = getEdgeLayoutIndex(upNodeIndex, downNodeIndex);
-      result.add(new EdgeImpl(toVisibleIndex(upNodeIndex), toVisibleIndex(downNodeIndex), type, layoutIndex));
+
+      int upLayoutIndex = myLayout.getLayoutIndex(upNodeIndex);
+      int downLayoutIndex;
+      if (downNodeIndex == SomeGraph.NOT_LOAD_COMMIT) {
+        downLayoutIndex = upLayoutIndex;
+      } else {
+        downLayoutIndex = myLayout.getLayoutIndex(downNodeIndex);
+      }
+      result.add(new EdgeImpl(toVisibleIndex(upNodeIndex), toVisibleIndex(downNodeIndex), type, upLayoutIndex, downLayoutIndex));
     }
     return result;
   }

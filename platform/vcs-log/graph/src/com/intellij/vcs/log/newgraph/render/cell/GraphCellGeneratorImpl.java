@@ -205,7 +205,7 @@ public class GraphCellGeneratorImpl extends AbstractGraphCellGenerator {
       return graphElements;
     }
 
-    List<GraphElement> result = new ArrayList<GraphElement>();
+    final List<GraphElement> result = new ArrayList<GraphElement>();
     result.add(myGraph.getNode(visibleRowIndex));
 
     for (Edge edge : myEdgesInRow.getEdgesInRow(visibleRowIndex)) {
@@ -216,26 +216,29 @@ public class GraphCellGeneratorImpl extends AbstractGraphCellGenerator {
     Collections.sort(result, new Comparator<GraphElement>() {
       @Override
       public int compare(@NotNull GraphElement o1, @NotNull GraphElement o2) {
-        int layoutIndex1 = o1.getLayoutIndex();
-        int layoutIndex2 = o2.getLayoutIndex();
-        if (layoutIndex1 != layoutIndex2)
-          return layoutIndex1 - layoutIndex2;
+        int upLayoutIndex1, upLayoutIndex2;
+        int downLayoutIndex1, downLayoutIndex2;
 
-        if (o1 instanceof Node)
-          return 1;
-
-        if (o2 instanceof Node)
-          return -1;
-
-        if (o1 instanceof Edge && o2 instanceof Edge) {
-          Edge edge1 = (Edge)o1;
-          Edge edge2 = (Edge)o2;
-          if (edge1.getUpNodeVisibleIndex() != edge2.getUpNodeVisibleIndex())
-            return edge1.getUpNodeVisibleIndex() - edge2.getUpNodeVisibleIndex();
-          else
-            return edge2.getDownNodeVisibleIndex() - edge1.getDownNodeVisibleIndex();
+        if (o1 instanceof Edge) {
+          upLayoutIndex1 = ((Edge)o1).upLayoutIndex();
+          downLayoutIndex1 = ((Edge)o1).downLayoutIndex();
+        } else {
+          upLayoutIndex1 = o1.getLayoutIndex();
+          downLayoutIndex1 = o1.getLayoutIndex();
         }
-        return 0;
+
+        if (o2 instanceof Edge) {
+          upLayoutIndex2 = ((Edge)o2).upLayoutIndex();
+          downLayoutIndex2 = ((Edge)o2).downLayoutIndex();
+        } else {
+          upLayoutIndex2 = o2.getLayoutIndex();
+          downLayoutIndex2 = o2.getLayoutIndex();
+        }
+
+        if (upLayoutIndex1 == upLayoutIndex2)
+          return downLayoutIndex1 - downLayoutIndex2;
+
+        return Math.max(upLayoutIndex1, downLayoutIndex1) - Math.max(upLayoutIndex2, downLayoutIndex2);
       }
     });
 
