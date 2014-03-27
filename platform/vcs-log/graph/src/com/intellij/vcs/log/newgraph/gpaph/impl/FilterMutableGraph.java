@@ -20,6 +20,12 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.util.Condition;
 import com.intellij.util.BooleanFunction;
 import com.intellij.util.SmartList;
+import com.intellij.util.containers.HashSet;
+import com.intellij.util.containers.MultiMap;
+import com.intellij.vcs.log.facade.utils.Flags;
+import com.intellij.vcs.log.facade.utils.IntToIntMap;
+import com.intellij.vcs.log.facade.utils.UpdatableIntToIntMap;
+import com.intellij.vcs.log.facade.utils.impl.ListIntToIntMap;
 import com.intellij.vcs.log.newgraph.PermanentGraph;
 import com.intellij.vcs.log.newgraph.PermanentGraphLayout;
 import com.intellij.vcs.log.newgraph.SomeGraph;
@@ -28,12 +34,10 @@ import com.intellij.vcs.log.newgraph.gpaph.GraphWithElementsInfo;
 import com.intellij.vcs.log.newgraph.gpaph.Node;
 import com.intellij.vcs.log.newgraph.gpaph.ThickHoverController;
 import com.intellij.vcs.log.newgraph.gpaph.actions.InternalGraphAction;
-import com.intellij.vcs.log.facade.utils.Flags;
-import com.intellij.vcs.log.facade.utils.IntToIntMap;
-import com.intellij.vcs.log.facade.utils.UpdatableIntToIntMap;
-import com.intellij.vcs.log.facade.utils.impl.ListIntToIntMap;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 public class FilterMutableGraph extends MutableGraphWithHiddenNodes<FilterMutableGraph.GraphWithElementsInfoImpl> {
@@ -58,7 +62,71 @@ public class FilterMutableGraph extends MutableGraphWithHiddenNodes<FilterMutabl
       }
     }, permanentGraph.nodesCount());
 
-    return new FilterMutableGraph(permanentGraph, layout, isVisibleNode, visibleToReal, visibleNodes);
+    return new FilterMutableGraph(permanentGraph, layout, isVisibleNode, visibleToReal, visibleNodes, getSpecialEdges2(permanentGraph, visibleNodes));
+  }
+
+
+  @NotNull
+  private static MultiMap<Integer, Integer> getSpecialEdges2(@NotNull PermanentGraph permanentGraph, @NotNull Flags visibleNodes) {
+    return new FilterAdditionalEdgesBuilder(permanentGraph, visibleNodes).build();
+  }
+
+  @NotNull
+  private static MultiMap<Integer, Integer> getSpecialEdges(@NotNull PermanentGraph permanentGraph, @NotNull Flags visibleNodes) {
+    MultiMap<Integer, Integer> specialEdges = new MultiMap<Integer, Integer>();
+
+    MultiMap<Integer, Integer> currentNodesToUpVisible = new MultiMap<Integer, Integer>();
+
+    MultiMap<Integer, Integer> allUpVisibleAccessibleVertexes = new MultiMap<Integer, Integer>();
+
+    for (int  i = 0; i < permanentGraph.nodesCount(); i++) {
+      Collection<Integer> upVisibleNodesCollection = currentNodesToUpVisible.remove(i);
+      HashSet<Integer> upVisibleNodes = new HashSet<Integer>(upVisibleNodesCollection == null ? Collections.<Integer>emptyList() : upVisibleNodesCollection);
+
+      if (visibleNodes.get(i)) {
+        HashSet<Integer> allAccessibleUpVertexes = new HashSet<Integer>(upVisibleNodes);
+
+        for (Integer upNode : permanentGraph.getUpNodes(i)) {
+          if (visibleNodes.get(upNode)) {
+            allAccessibleUpVertexes.add(upNode);
+            allAccessibleUpVertexes.addAll(allUpVisibleAccessibleVertexes.get(upNode));
+          }
+        }
+
+        for (Integer upVisibleNode : upVisibleNodes) {
+          allAccessibleUpVertexes.addAll(allUpVisibleAccessibleVertexes.get(upVisibleNode));
+        }
+        allUpVisibleAccessibleVertexes.putValues(i, allAccessibleUpVertexes);
+
+        for (Integer upVisibleNode : upVisibleNodes) {
+          boolean addEdge = true;
+
+          for (Integer anUpNode : upVisibleNodes) {
+            if (allUpVisibleAccessibleVertexes.get(anUpNode).contains(upVisibleNode)) {
+              addEdge = false;
+              break;
+            }
+          }
+
+          if (addEdge) {
+            specialEdges.putValue(upVisibleNode, i);
+            specialEdges.putValue(i, upVisibleNode);
+          }
+        }
+
+        for (Integer downNode : permanentGraph.getDownNodes(i)) {
+          if (!visibleNodes.get(downNode)) {
+            currentNodesToUpVisible.putValue(downNode, i);
+          }
+        }
+      } else {
+        for (Integer downNode : permanentGraph.getDownNodes(i)) {
+          currentNodesToUpVisible.putValues(downNode, upVisibleNodes);
+        }
+      }
+    }
+
+    return specialEdges;
   }
 
   @NotNull
@@ -81,8 +149,9 @@ public class FilterMutableGraph extends MutableGraphWithHiddenNodes<FilterMutabl
                             @NotNull PermanentGraphLayout layout,
                             @NotNull Condition<Integer> isVisibleNode,
                             @NotNull UpdatableIntToIntMap visibleToReal,
-                            @NotNull Flags visibleNodes) {
-    super(visibleToReal, new GraphWithElementsInfoImpl(permanentGraph, visibleNodes, visibleToReal), layout);
+                            @NotNull Flags visibleNodes,
+                            @NotNull MultiMap<Integer, Integer> specialEdges) {
+    super(visibleToReal, new GraphWithElementsInfoImpl(permanentGraph, visibleNodes, visibleToReal, specialEdges), layout);
     myUpdatableIntToIntMap = visibleToReal;
     myVisibleNodes = visibleNodes;
     myPermanentGraph = permanentGraph;
@@ -131,11 +200,16 @@ public class FilterMutableGraph extends MutableGraphWithHiddenNodes<FilterMutabl
     private final PermanentGraph myGraph;
     private final Flags myVisibleNodes;
     private final IntToIntMap myIntToIntMap;
+    private final MultiMap<Integer, Integer> specialEdges;
 
-    private GraphWithElementsInfoImpl(PermanentGraph graph, Flags visibleNodes, IntToIntMap intToIntMap) {
+    private GraphWithElementsInfoImpl(PermanentGraph graph,
+                                      Flags visibleNodes,
+                                      IntToIntMap intToIntMap,
+                                      MultiMap<Integer, Integer> specialEdges) {
       myGraph = graph;
       myVisibleNodes = visibleNodes;
       myIntToIntMap = intToIntMap;
+      this.specialEdges = specialEdges;
     }
 
     @NotNull
@@ -147,6 +221,9 @@ public class FilterMutableGraph extends MutableGraphWithHiddenNodes<FilterMutabl
     @NotNull
     @Override
     public Edge.Type getEdgeType(int upNodeIndex, int downNodeIndex) {
+      if (specialEdges.get(upNodeIndex).contains(downNodeIndex)) {
+        return Edge.Type.HIDE_FRAGMENT;
+      }
       return Edge.Type.USUAL;
     }
 
@@ -164,6 +241,11 @@ public class FilterMutableGraph extends MutableGraphWithHiddenNodes<FilterMutabl
           result.add(upNode);
       }
 
+      for (int adjNode : specialEdges.get(nodeIndex)) {
+        if (adjNode < nodeIndex)
+          result.add(adjNode);
+      }
+
       return result;
     }
 
@@ -174,6 +256,11 @@ public class FilterMutableGraph extends MutableGraphWithHiddenNodes<FilterMutabl
       for (int downNode : myGraph.getDownNodes(nodeIndex)) {
         if (downNode != SomeGraph.NOT_LOAD_COMMIT && myVisibleNodes.get(downNode))
           result.add(downNode);
+      }
+
+      for (int adjNode : specialEdges.get(nodeIndex)) {
+        if (adjNode > nodeIndex)
+          result.add(adjNode);
       }
 
       return result;
