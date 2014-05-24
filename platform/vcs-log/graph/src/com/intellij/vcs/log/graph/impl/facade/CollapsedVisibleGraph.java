@@ -106,17 +106,17 @@ public class CollapsedVisibleGraph<CommitId> extends AbstractVisibleGraph<Commit
   protected GraphAnswer<CommitId> clickByElement(@NotNull GraphElement graphElement) {
     GraphEdge graphEdge = AbstractPrintElementsManager.containedCollapsedEdge(graphElement, myLinearGraphWithCommitInfo);
     if (graphEdge != null) {
-      int upShortIndex = myIntToIntMap.getLongIndex(graphEdge.getUpNodeIndex());
-      int downShortIndex = myIntToIntMap.getLongIndex(graphEdge.getDownNodeIndex());
-      myCollapsedGraph.expand(upShortIndex, downShortIndex);
+      int upLongIndex = myIntToIntMap.getLongIndex(graphEdge.getUpNodeIndex());
+      int downLongIndex = myIntToIntMap.getLongIndex(graphEdge.getDownNodeIndex());
+      myCollapsedGraph.expand(upLongIndex, downLongIndex);
       return createJumpAnswer(graphEdge.getUpNodeIndex());
     }
 
     FragmentGenerator.GraphFragment relativeFragment = myFragmentGeneratorForPrinterGraph.getLongFragment(graphElement);
     if (relativeFragment != null) {
-      int upShortIndex = myIntToIntMap.getLongIndex(relativeFragment.upNodeIndex);
-      int downShortIndex = myIntToIntMap.getLongIndex(relativeFragment.downNodeIndex);
-      myCollapsedGraph.collapse(upShortIndex, downShortIndex);
+      int upLongIndex = myIntToIntMap.getLongIndex(relativeFragment.upNodeIndex);
+      int downLongIndex = myIntToIntMap.getLongIndex(relativeFragment.downNodeIndex);
+      myCollapsedGraph.collapse(upLongIndex, downLongIndex);
       return createJumpAnswer(relativeFragment.upNodeIndex);
     }
 
