@@ -98,7 +98,7 @@ public class PermanentGraphImpl<CommitId> implements PermanentGraph<CommitId>, P
     if (filter == null) {
       return CollapsedVisibleGraph.newInstance(getBekPermanentGraphInfo(sortType), headsOfVisibleBranches);
     } else {
-      return FilterVisibleGraph.newInstance(getBekPermanentGraphInfo(sortType), headsOfVisibleBranches, filter);
+      return CollapsedFilterVisibleGraph.newInstance(getBekPermanentGraphInfo(sortType), headsOfVisibleBranches, filter);
     }
   }
 

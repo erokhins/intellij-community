@@ -62,6 +62,7 @@ public final class GraphNode implements GraphElement {
   }
 
   public enum Type {
-    USUAL
+    USUAL,
+    GRAY
   }
 }
