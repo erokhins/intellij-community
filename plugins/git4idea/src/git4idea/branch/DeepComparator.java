@@ -215,7 +215,7 @@ public class DeepComparator implements Disposable {
       myHighlighter = new VcsLogHighlighter() {
         @Nullable
         @Override
-        public Color getForeground(int commitIndex, boolean isSelected) {
+        public Color getForeground(int rowIndex, int commitIndex, boolean isSelected) {
           return !myNonPickedCommits.contains(commitIndex) ? JBColor.GRAY : null;
         }
       };

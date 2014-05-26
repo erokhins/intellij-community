@@ -13,27 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.intellij.vcs.log.graph;
+package com.intellij.vcs.log.graph.impl.print.elements;
 
-import org.jetbrains.annotations.NotNull;
+import com.intellij.vcs.log.graph.PrintElement;
 
-import java.awt.*;
+public class GrayPrintElement implements PrintElement {
+  private final int myRowIndex;
 
-public interface PaintInfo {
+  public GrayPrintElement(int rowIndex) {
+    myRowIndex = rowIndex;
+  }
 
-  /**
-   * Returns the image to actually paint.
-   */
-  @NotNull
-  Image getImage();
+  @Override
+  public int getRowIndex() {
+    return myRowIndex;
+  }
 
-  /**
-   * Returns the "interesting" width of the painted image, i.e. the width which the text in the table should be offset by. <br/>
-   * It can be smaller than the width of {@link #getImage() the image}, because we allow the text to cover part of the graph
-   * (some diagonal edges, etc.)
-   */
-  int getWidth();
+  @Override
+  public int getPositionInCurrentRow() {
+    return 0;
+  }
 
-  boolean isGray();
+  @Override
+  public int getColorId() {
+    return 0;
+  }
 
+  @Override
+  public boolean isSelected() {
+    return false;
+  }
 }

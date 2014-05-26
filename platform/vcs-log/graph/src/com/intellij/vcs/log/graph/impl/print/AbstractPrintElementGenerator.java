@@ -21,10 +21,12 @@ import com.intellij.vcs.log.graph.SimplePrintElement;
 import com.intellij.vcs.log.graph.api.PrintedLinearGraph;
 import com.intellij.vcs.log.graph.api.elements.GraphEdge;
 import com.intellij.vcs.log.graph.api.elements.GraphElement;
+import com.intellij.vcs.log.graph.api.elements.GraphNode;
 import com.intellij.vcs.log.graph.api.printer.PrintElementGenerator;
 import com.intellij.vcs.log.graph.api.printer.PrintElementWithGraphElement;
 import com.intellij.vcs.log.graph.api.printer.PrintElementsManager;
 import com.intellij.vcs.log.graph.impl.print.elements.EdgePrintElementImpl;
+import com.intellij.vcs.log.graph.impl.print.elements.GrayPrintElement;
 import com.intellij.vcs.log.graph.impl.print.elements.SimplePrintElementImpl;
 import org.jetbrains.annotations.NotNull;
 
@@ -61,6 +63,10 @@ public abstract class AbstractPrintElementGenerator implements PrintElementGener
     }
 
     for (SimpleRowElement rowElement : getSimpleRowElements(rowIndex)) {
+      if (rowElement.myType == SimplePrintElement.Type.NODE) {
+        if (((GraphNode)rowElement.myElement).getType() == GraphNode.Type.GRAY)
+          result.add(new GrayPrintElement(rowIndex));
+      }
       result.add(createSimplePrintElement(rowIndex, rowElement));
     }
 

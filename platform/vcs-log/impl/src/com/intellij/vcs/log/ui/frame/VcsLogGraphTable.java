@@ -24,6 +24,7 @@ import com.intellij.openapi.vcs.changes.committed.CommittedChangesTreeBrowser;
 import com.intellij.openapi.vcs.changes.issueLinks.TableLinkMouseListener;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.ui.ColoredTableCellRenderer;
+import com.intellij.ui.JBColor;
 import com.intellij.ui.PopupHandler;
 import com.intellij.ui.TableScrollingUtil;
 import com.intellij.ui.table.JBTable;
@@ -111,6 +112,21 @@ public class VcsLogGraphTable extends JBTable implements TypeSafeDataProvider, C
 
     PopupHandler.installPopupHandler(this, VcsLogUiImpl.POPUP_ACTION_GROUP, VcsLogUiImpl.VCS_LOG_TABLE_PLACE);
     TableScrollingUtil.installActions(this, false);
+
+    addSmvHighlighter();
+  }
+
+  private void addSmvHighlighter() {
+    myHighlighters.add(new VcsLogHighlighter() {
+      @Nullable
+      @Override
+      public Color getForeground(int rowIndex, int commitIndex, boolean isSelected) {
+        PaintInfo paintInfo = VcsLogGraphTable.this.myDataPack.getGraphFacade().paint(rowIndex);
+        if (paintInfo.isGray())
+          return JBColor.GRAY;
+        return null;
+      }
+    });
   }
 
   @Override
@@ -281,7 +297,7 @@ public class VcsLogGraphTable extends JBTable implements TypeSafeDataProvider, C
   public void applyHighlighters(@NotNull Component rendererComponent, int row, boolean selected) {
     boolean fgUpdated = false;
     for (VcsLogHighlighter highlighter : myHighlighters) {
-      Color color = highlighter.getForeground(myDataPack.getGraphFacade().getCommitAtRow(row), selected);
+      Color color = highlighter.getForeground(row, myDataPack.getGraphFacade().getCommitAtRow(row), selected);
       if (color != null) {
         rendererComponent.setForeground(color);
         fgUpdated = true;

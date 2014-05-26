@@ -21,6 +21,7 @@ import com.intellij.util.ui.UIUtil;
 import com.intellij.vcs.log.graph.*;
 import com.intellij.vcs.log.graph.actions.ActionController;
 import com.intellij.vcs.log.graph.actions.GraphMouseAction;
+import com.intellij.vcs.log.graph.impl.print.elements.GrayPrintElement;
 import com.intellij.vcs.log.printer.idea.ColorGenerator;
 import com.intellij.vcs.log.printer.idea.GraphCellPainter;
 import com.intellij.vcs.log.printer.idea.PrintParameters;
@@ -81,10 +82,14 @@ public class DelegateGraphFacade implements GraphFacade {
   @NotNull
   @Override
   public PaintInfo paint(int visibleRow) {
-    Collection<PrintElement> printElements = myVisibleGraph.getRowInfo(visibleRow).getPrintElements();
+    final Collection<PrintElement> printElements = myVisibleGraph.getRowInfo(visibleRow).getPrintElements();
     int maxIndex = 0;
+    boolean isGray = false;
     for (PrintElement printElement : printElements) {
-      maxIndex = Math.max(maxIndex, printElement.getPositionInCurrentRow());
+      if (printElement instanceof GrayPrintElement)
+        isGray = true;
+      else
+        maxIndex = Math.max(maxIndex, printElement.getPositionInCurrentRow());
     }
     maxIndex++;
     final BufferedImage image =
@@ -93,6 +98,8 @@ public class DelegateGraphFacade implements GraphFacade {
     myGraphCellPainter.draw(g2, printElements);
 
     final int width = maxIndex * PrintParameters.WIDTH_NODE;
+
+    final boolean isGrayFinal = isGray;
     return new PaintInfo() {
       @NotNull
       @Override
@@ -103,6 +110,11 @@ public class DelegateGraphFacade implements GraphFacade {
       @Override
       public int getWidth() {
         return width;
+      }
+
+      @Override
+      public boolean isGray() {
+        return isGrayFinal;
       }
     };
   }

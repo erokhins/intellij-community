@@ -30,6 +30,5 @@ public interface VcsLogHighlighter {
    * @param isSelected  if true, the row currently has selection on it.
    */
   @Nullable
-  Color getForeground(int commitIndex, boolean isSelected);
-
+  Color getForeground(int rowIndex, int commitIndex, boolean isSelected);
 }

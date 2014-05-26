@@ -99,7 +99,7 @@ public class PrintElementGeneratorImpl extends AbstractPrintElementGenerator {
         if (position == null) {
           int downNodeVisibleIndex = edge.getDownNodeIndex();
           if (downNodeVisibleIndex != LinearGraph.NOT_LOAD_COMMIT)
-            position = toPosition.get(new GraphNode(downNodeVisibleIndex));
+            position = toPosition.get(new GraphNode(downNodeVisibleIndex, myPrintedLinearGraph.getNodeType(downNodeVisibleIndex)));
         }
 
         if (position == null) {
@@ -207,7 +207,7 @@ public class PrintElementGeneratorImpl extends AbstractPrintElementGenerator {
     }
 
     List<GraphElement> result = new ArrayList<GraphElement>();
-    result.add(new GraphNode(rowIndex));
+    result.add(new GraphNode(rowIndex, myPrintedLinearGraph.getNodeType(rowIndex)));
 
     for (GraphEdge edge : myEdgesInRowGenerator.getEdgesInRow(rowIndex)) {
       if (edgeIsVisibleInRow(edge, rowIndex))

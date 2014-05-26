@@ -46,6 +46,11 @@ class EmptyGraphFacade implements GraphFacade {
       public int getWidth() {
         return 0;
       }
+
+      @Override
+      public boolean isGray() {
+        return false;
+      }
     };
   }
 
