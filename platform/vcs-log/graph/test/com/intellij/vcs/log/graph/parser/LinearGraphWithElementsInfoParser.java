@@ -19,6 +19,7 @@ package com.intellij.vcs.log.graph.parser;
 import com.intellij.openapi.util.Pair;
 import com.intellij.util.containers.MultiMap;
 import com.intellij.vcs.log.graph.api.LinearGraphWithElementInfo;
+import com.intellij.vcs.log.graph.api.RefactoringLinearGraph;
 import com.intellij.vcs.log.graph.api.elements.GraphEdge;
 import com.intellij.vcs.log.graph.api.elements.GraphEdgeType;
 import com.intellij.vcs.log.graph.api.elements.GraphNode;
@@ -91,7 +92,7 @@ public class LinearGraphWithElementsInfoParser {
     return new Pair<Integer, Character>(Integer.decode(in.substring(0, in.length() - 2)), in.charAt(in.length() - 1));
   }
 
-  private static class TestLinearGraphWithElementsInfo implements LinearGraphWithElementInfo {
+  private static class TestLinearGraphWithElementsInfo extends RefactoringLinearGraph implements LinearGraphWithElementInfo {
 
     private final List<GraphNode> myGraphNodes;
     private final MultiMap<Integer, GraphEdge> myUpEdges;
