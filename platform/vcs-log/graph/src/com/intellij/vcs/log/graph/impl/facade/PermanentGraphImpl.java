@@ -22,12 +22,19 @@ import com.intellij.util.containers.ContainerUtil;
 import com.intellij.vcs.log.graph.*;
 import com.intellij.vcs.log.graph.api.LinearGraph;
 import com.intellij.vcs.log.graph.api.permanent.PermanentGraphInfo;
-import com.intellij.vcs.log.graph.impl.facade.bek.*;
+import com.intellij.vcs.log.graph.impl.facade.bek.BekChecker;
+import com.intellij.vcs.log.graph.impl.facade.bek.BekIntMap;
+import com.intellij.vcs.log.graph.impl.facade.bek.BekSorter;
+import com.intellij.vcs.log.graph.impl.facade.bek.DelegatedPermanentGraphInfo;
 import com.intellij.vcs.log.graph.impl.permanent.*;
+import com.intellij.vcs.log.graph.utils.LinearGraphUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class PermanentGraphImpl<CommitId> implements PermanentGraph<CommitId>, PermanentGraphInfo<CommitId> {
 
@@ -130,7 +137,8 @@ public class PermanentGraphImpl<CommitId> implements PermanentGraph<CommitId>, P
       CommitId commitId = myPermanentCommitsInfo.getCommitId(index);
       GraphCommit<CommitId> graphCommit = myCommitsWithNotLoadParent.get(commitId);
       if (graphCommit == null) {
-        List<CommitId> parentsCommitIds = myPermanentCommitsInfo.convertToCommitIdList(myPermanentLinearGraph.getDownNodes(index));
+        List<Integer> downNodes = LinearGraphUtils.getDownNodes(myPermanentLinearGraph, index);
+        List<CommitId> parentsCommitIds = myPermanentCommitsInfo.convertToCommitIdList(downNodes);
         graphCommit = new GraphCommitImpl<CommitId>(commitId, parentsCommitIds, myPermanentCommitsInfo.getTimestamp(index));
       }
       result.add(graphCommit);
@@ -143,7 +151,7 @@ public class PermanentGraphImpl<CommitId> implements PermanentGraph<CommitId>, P
   @Override
   public List<CommitId> getChildren(@NotNull CommitId commit) {
     int commitIndex = myPermanentCommitsInfo.getPermanentNodeIndex(commit);
-    return myPermanentCommitsInfo.convertToCommitIdList(myPermanentLinearGraph.getUpNodes(commitIndex));
+    return myPermanentCommitsInfo.convertToCommitIdList(LinearGraphUtils.getUpNodes(myPermanentLinearGraph, commitIndex));
   }
 
   @NotNull

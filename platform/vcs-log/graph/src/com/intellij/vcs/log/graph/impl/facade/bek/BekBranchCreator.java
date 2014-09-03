@@ -18,9 +18,12 @@ package com.intellij.vcs.log.graph.impl.facade.bek;
 import com.intellij.openapi.util.Pair;
 import com.intellij.util.containers.ContainerUtil;
 import com.intellij.vcs.log.graph.api.LinearGraph;
+import com.intellij.vcs.log.graph.api.elements.GraphEdge;
+import com.intellij.vcs.log.graph.api.elements.GraphEdgeType;
 import com.intellij.vcs.log.graph.impl.permanent.GraphLayoutImpl;
 import com.intellij.vcs.log.graph.utils.DfsUtil;
 import com.intellij.vcs.log.graph.utils.Flags;
+import com.intellij.vcs.log.graph.utils.LinearGraphUtils;
 import com.intellij.vcs.log.graph.utils.impl.BitSetFlags;
 import org.jetbrains.annotations.NotNull;
 
@@ -69,11 +72,12 @@ class BekBranchCreator {
       @Override
       public int fun(int currentNode) {
         int currentLayout = myGraphLayout.getLayoutIndex(currentNode);
-        List<Integer> downNodes = myPermanentGraph.getDownNodes(currentNode);
-        for (int i = downNodes.size() - 1; i >= 0; i--) {
-          int downNode = downNodes.get(i);
-          if (downNode == LinearGraph.NOT_LOAD_COMMIT)
+        List<GraphEdge> downEdges = myPermanentGraph.getDownEdges(currentNode);
+        for (int i = downEdges.size() - 1; i >= 0; i--) {
+          GraphEdge downEdge = downEdges.get(i);
+          if (downEdge.getType() == GraphEdgeType.NOT_LOAD_COMMIT)
             continue;
+          int downNode = downEdge.getDownNodeIndex();
 
           if (myDoneNodes.get(downNode)) {
             if (myGraphLayout.getLayoutIndex(downNode) < startLayout)
@@ -83,7 +87,7 @@ class BekBranchCreator {
 
             // almost ok node, except (may be) up nodes
             boolean hasUndoneUpNodes = false;
-            for (int upNode : myPermanentGraph.getUpNodes(downNode)) {
+            for (int upNode : LinearGraphUtils.getUpNodes(myPermanentGraph, downNode)) {
               if (!myDoneNodes.get(upNode) && myGraphLayout.getLayoutIndex(upNode) <= currentLayout) {
                 hasUndoneUpNodes = true;
                 break;

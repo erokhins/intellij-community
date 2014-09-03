@@ -17,6 +17,8 @@
 package com.intellij.vcs.log.graph.impl.permanent;
 
 import com.intellij.vcs.log.graph.api.LinearGraph;
+import com.intellij.vcs.log.graph.api.elements.GraphEdge;
+import com.intellij.vcs.log.graph.api.elements.GraphEdgeType;
 import com.intellij.vcs.log.graph.utils.DfsUtil;
 import org.jetbrains.annotations.NotNull;
 
@@ -31,7 +33,7 @@ public class GraphLayoutBuilder {
   public static GraphLayoutImpl build(@NotNull LinearGraph graph, @NotNull Comparator<Integer> headerNodeIndexComparator) {
     List<Integer> heads = new ArrayList<Integer>();
     for (int i = 0; i < graph.nodesCount(); i++) {
-      if (graph.getUpNodes(i).size() == 0) {
+      if (graph.getUpEdges(i).size() == 0) {
         heads.add(i);
       }
     }
@@ -74,9 +76,9 @@ public class GraphLayoutBuilder {
           myLayoutIndex[currentNode] = currentLayoutIndex;
 
         int childWithoutLayoutIndex = -1;
-        for (int childNodeIndex : myGraph.getDownNodes(currentNode)) {
-          if (childNodeIndex != LinearGraph.NOT_LOAD_COMMIT && myLayoutIndex[childNodeIndex] == 0) {
-            childWithoutLayoutIndex = childNodeIndex;
+        for (GraphEdge edgeToChild : myGraph.getDownEdges(currentNode)) {
+          if (edgeToChild.getType() != GraphEdgeType.NOT_LOAD_COMMIT && myLayoutIndex[edgeToChild.getDownNodeIndex()] == 0) {
+            childWithoutLayoutIndex = edgeToChild.getDownNodeIndex();
             break;
           }
         }

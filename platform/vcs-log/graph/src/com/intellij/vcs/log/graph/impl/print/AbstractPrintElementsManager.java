@@ -19,7 +19,6 @@ package com.intellij.vcs.log.graph.impl.print;
 import com.intellij.util.containers.ContainerUtil;
 import com.intellij.vcs.log.graph.GraphColorManager;
 import com.intellij.vcs.log.graph.SimplePrintElement;
-import com.intellij.vcs.log.graph.api.LinearGraph;
 import com.intellij.vcs.log.graph.api.LinearGraphWithCommitInfo;
 import com.intellij.vcs.log.graph.api.LinearGraphWithElementInfo;
 import com.intellij.vcs.log.graph.api.elements.GraphEdge;
@@ -46,13 +45,13 @@ public abstract class AbstractPrintElementsManager<CommitId> implements PrintEle
 
     } else {
       int nodeIndex = ((GraphNode)element).getNodeIndex();
-      for (int upNode : graphWithElementsInfo.getUpNodes(nodeIndex)) {
-        if (graphWithElementsInfo.getEdgeType(upNode, nodeIndex) == GraphEdgeType.DOTTED)
-          return new GraphEdge(upNode, nodeIndex, GraphEdgeType.DOTTED);
+      for (GraphEdge upEdge : graphWithElementsInfo.getUpEdges(nodeIndex)) {
+        if (upEdge.getType() == GraphEdgeType.DOTTED)
+          return upEdge;
       }
-      for (int downNode : graphWithElementsInfo.getDownNodes(nodeIndex)) {
-        if (graphWithElementsInfo.getEdgeType(nodeIndex, downNode) == GraphEdgeType.DOTTED)
-          return new GraphEdge(nodeIndex, downNode, GraphEdgeType.DOTTED);
+      for (GraphEdge downEdge : graphWithElementsInfo.getDownEdges(nodeIndex)) {
+        if (downEdge.getType() == GraphEdgeType.DOTTED)
+          return downEdge;
       }
     }
 
@@ -130,10 +129,11 @@ public abstract class AbstractPrintElementsManager<CommitId> implements PrintEle
     } else {
       GraphEdge edge = (GraphEdge)element;
       upNodeIndex = edge.getUpNodeIndex();
-      downNodeIndex = edge.getDownNodeIndex();
+      if (edge.getType() == GraphEdgeType.NOT_LOAD_COMMIT)
+        downNodeIndex = upNodeIndex;
+      else
+        downNodeIndex = edge.getDownNodeIndex();
     }
-    if (downNodeIndex == LinearGraph.NOT_LOAD_COMMIT)
-      downNodeIndex = upNodeIndex;
 
     int upLayoutIndex = myPrintedLinearGraph.getLayoutIndex(upNodeIndex);
     int downLayoutIndex = myPrintedLinearGraph.getLayoutIndex(downNodeIndex);

@@ -20,6 +20,9 @@ import com.intellij.vcs.log.graph.utils.Flags;
 import com.intellij.vcs.log.graph.utils.IntIntMultiMap;
 import org.jetbrains.annotations.NotNull;
 
+import static com.intellij.vcs.log.graph.utils.LinearGraphUtils.getDownNodes;
+import static com.intellij.vcs.log.graph.utils.LinearGraphUtils.getUpNodes;
+
 public class DottedEdgesComputer {
   @NotNull
   public static IntIntMultiMap compute(@NotNull LinearGraph delegateGraph, @NotNull Flags visibleNodes) {
@@ -63,7 +66,7 @@ public class DottedEdgesComputer {
       if (myVisibleNodes.get(i)) {
         int nearlyUp = Integer.MIN_VALUE;
         int maxAdjNumber = Integer.MIN_VALUE;
-        for (int upNode : myDelegateGraph.getUpNodes(i)) {
+        for (int upNode : getUpNodes(myDelegateGraph, i)) {
           if (myVisibleNodes.get(upNode))
             maxAdjNumber = Math.max(maxAdjNumber, myNumbers[upNode]);
           else
@@ -80,7 +83,7 @@ public class DottedEdgesComputer {
         // node i invisible
 
         int nearlyUp = Integer.MIN_VALUE;
-        for (int upNode : myDelegateGraph.getUpNodes(i)) {
+        for (int upNode : getUpNodes(myDelegateGraph, i)) {
           if (myVisibleNodes.get(upNode))
             nearlyUp = Math.max(nearlyUp, upNode);
           else
@@ -96,8 +99,7 @@ public class DottedEdgesComputer {
       if (myVisibleNodes.get(i)) {
         int nearlyDown = Integer.MAX_VALUE;
         int minAdjNumber = Integer.MAX_VALUE;
-        for (int downNode : myDelegateGraph.getDownNodes(i)) {
-          if (downNode == LinearGraph.NOT_LOAD_COMMIT) continue;
+        for (int downNode : getDownNodes(myDelegateGraph, i)) {
           if (myVisibleNodes.get(downNode))
             minAdjNumber = Math.min(minAdjNumber, myNumbers[downNode]);
           else
@@ -115,8 +117,7 @@ public class DottedEdgesComputer {
         // node i invisible
 
         int nearlyDown = Integer.MAX_VALUE;
-        for (int downNode : myDelegateGraph.getDownNodes(i)) {
-          if (downNode == LinearGraph.NOT_LOAD_COMMIT) continue;
+        for (int downNode : getDownNodes(myDelegateGraph, i)) {
           if (myVisibleNodes.get(downNode))
             nearlyDown = Math.min(nearlyDown, downNode);
           else

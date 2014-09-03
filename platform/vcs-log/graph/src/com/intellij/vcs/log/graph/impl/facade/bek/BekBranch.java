@@ -16,6 +16,7 @@
 package com.intellij.vcs.log.graph.impl.facade.bek;
 
 import com.intellij.vcs.log.graph.api.LinearGraph;
+import com.intellij.vcs.log.graph.utils.LinearGraphUtils;
 import com.intellij.vcs.log.graph.utils.TimestampGetter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -62,7 +63,7 @@ class BekBranch {
         break;
 
       // upNode is mergeCommit
-      List<Integer> downNodes = myPermanentGraph.getDownNodes(upNode);
+      List<Integer> downNodes = LinearGraphUtils.getDownNodes(myPermanentGraph, upNode);
       if (downNodes.size() > 1 && downNodes.contains(downNode))
         continue;
 

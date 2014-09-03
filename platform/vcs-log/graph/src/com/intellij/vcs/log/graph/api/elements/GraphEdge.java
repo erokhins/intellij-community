@@ -35,6 +35,7 @@ public final class GraphEdge implements GraphElement {
   }
 
   public int getDownNodeIndex() {
+    assert myType != GraphEdgeType.NOT_LOAD_COMMIT;
     return myDownNodeIndex;
   }
 

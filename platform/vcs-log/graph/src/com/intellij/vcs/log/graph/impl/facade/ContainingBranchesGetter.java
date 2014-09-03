@@ -19,6 +19,7 @@ package com.intellij.vcs.log.graph.impl.facade;
 import com.intellij.vcs.log.graph.api.LinearGraph;
 import com.intellij.vcs.log.graph.utils.DfsUtil;
 import com.intellij.vcs.log.graph.utils.Flags;
+import com.intellij.vcs.log.graph.utils.LinearGraphUtils;
 import com.intellij.vcs.log.graph.utils.impl.BitSetFlags;
 import org.jetbrains.annotations.NotNull;
 
@@ -54,7 +55,7 @@ public class ContainingBranchesGetter {
     myDfsUtil.nodeDfsIterator(nodeIndex, new DfsUtil.NextNode() {
       @Override
       public int fun(int currentNode) {
-        for (int upNode : myPermanentGraph.getUpNodes(currentNode)) {
+        for (int upNode : LinearGraphUtils.getUpNodes(myPermanentGraph, currentNode)) {
           if (!myTempFlags.get(upNode)) {
             myTempFlags.set(upNode, true);
             checkAndAdd(upNode, result);

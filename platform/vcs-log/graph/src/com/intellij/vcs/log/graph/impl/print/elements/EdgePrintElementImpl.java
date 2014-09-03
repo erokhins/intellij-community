@@ -27,6 +27,7 @@ public class EdgePrintElementImpl extends AbstractPrintElement implements EdgePr
   public static EdgePrintElement.LineStyle convertToLineStyle(@NotNull GraphEdgeType edgeType) {
     switch (edgeType) {
       case USUAL:
+      case NOT_LOAD_COMMIT:
         return EdgePrintElement.LineStyle.SOLID;
       case DOTTED:
         return EdgePrintElement.LineStyle.DASHED;

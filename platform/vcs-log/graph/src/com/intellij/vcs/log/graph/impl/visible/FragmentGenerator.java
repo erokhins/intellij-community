@@ -30,6 +30,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static com.intellij.vcs.log.graph.utils.LinearGraphUtils.getDownNodes;
+import static com.intellij.vcs.log.graph.utils.LinearGraphUtils.getUpNodes;
+
 public class FragmentGenerator {
   private static final int SHORT_FRAGMENT_MAX_SIZE = 10;
   private static final int MAX_SEARCH_SIZE = 10;
@@ -43,14 +46,14 @@ public class FragmentGenerator {
   private final Function<Integer, List<Integer>> upNodesFun = new Function<Integer, List<Integer>>() {
     @Override
     public List<Integer> fun(Integer integer) {
-      return myLinearGraph.getUpNodes(integer);
+      return getUpNodes(myLinearGraph, integer);
     }
   };
 
   private final Function<Integer, List<Integer>> downNodesFun = new Function<Integer, List<Integer>>() {
     @Override
     public List<Integer> fun(Integer integer) {
-      return myLinearGraph.getDownNodes(integer);
+      return getDownNodes(myLinearGraph, integer);
     }
   };
 
@@ -77,11 +80,11 @@ public class FragmentGenerator {
       if (graphFragment != null && graphFragment.downNodeIndex >= downNodeIndex)
         return graphFragment;
 
-      List<Integer> upNodes = myLinearGraph.getUpNodes(upNodeIndex);
-      if (upNodes.size() != 1) {
+      List<GraphEdge> upEdges = myLinearGraph.getUpEdges(upNodeIndex);
+      if (upEdges.size() != 1) {
         break;
       }
-      upNodeIndex = upNodes.get(0);
+      upNodeIndex = upEdges.get(0).getUpNodeIndex();
     }
 
     return null;
@@ -139,7 +142,7 @@ public class FragmentGenerator {
     if (maxUp != startFragment.upNodeIndex || maxDown != startFragment.downNodeIndex) {
       return new GraphFragment(maxUp, maxDown);
     } else {
-      if (myLinearGraph.getDownNodes(startFragment.upNodeIndex).size() != 1)
+      if (myLinearGraph.getDownEdges(startFragment.upNodeIndex).size() != 1)
         return startFragment;
     }
     return null;
@@ -157,7 +160,7 @@ public class FragmentGenerator {
     grayNodes.addAll(getNextNodes.fun(startNode));
 
     int endNode = -1;
-    while (blackNodes.size() < SHORT_FRAGMENT_MAX_SIZE && !grayNodes.contains(LinearGraph.NOT_LOAD_COMMIT)) {
+    while (blackNodes.size() < SHORT_FRAGMENT_MAX_SIZE) {
       int nextBlackNode = -1;
       for (int grayNode : grayNodes) {
         if (blackNodes.containsAll(getPrevNodes.fun(grayNode))) {

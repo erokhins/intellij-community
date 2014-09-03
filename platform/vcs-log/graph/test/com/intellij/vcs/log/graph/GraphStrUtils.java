@@ -32,6 +32,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
+import static com.intellij.vcs.log.graph.utils.LinearGraphUtils.*;
 import static org.junit.Assert.assertEquals;
 
 public class GraphStrUtils {
@@ -65,10 +66,10 @@ public class GraphStrUtils {
       s.append(nodeIndex);
 
       s.append(CommitParser.SEPARATOR);
-      appendSortList(graph.getUpNodes(nodeIndex), s);
+      appendSortList(getUpNodes(graph, nodeIndex), s);
 
       s.append(CommitParser.SEPARATOR);
-      appendList(graph.getDownNodes(nodeIndex), s);
+      appendList(getDownNodes(graph, nodeIndex), s);
     }
     return s.toString();
   }
@@ -180,7 +181,7 @@ public class GraphStrUtils {
       s.append(i).append('_').append(toChar(graph.getNodeType(i)));
       s.append(CommitParser.SEPARATOR);
       boolean first = true;
-      for (int downNode : graph.getDownNodes(i)) {
+      for (int downNode : getDownNodes(graph, i)) {
         if (first)
           first = false;
         else

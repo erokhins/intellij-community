@@ -18,7 +18,6 @@ package com.intellij.vcs.log.graph.impl.print;
 
 import com.intellij.util.containers.HashSet;
 import com.intellij.vcs.log.graph.GraphColorManager;
-import com.intellij.vcs.log.graph.api.LinearGraph;
 import com.intellij.vcs.log.graph.api.LinearGraphWithCommitInfo;
 import com.intellij.vcs.log.graph.api.elements.GraphElement;
 import com.intellij.vcs.log.graph.impl.visible.FragmentGenerator;
@@ -28,6 +27,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
 import java.util.Set;
+
+import static com.intellij.vcs.log.graph.utils.LinearGraphUtils.getDownNodes;
+import static com.intellij.vcs.log.graph.utils.LinearGraphUtils.getUpNodes;
 
 public class PrintElementsManagerImpl<CommitId> extends AbstractPrintElementsManager<CommitId> {
 
@@ -51,8 +53,8 @@ public class PrintElementsManagerImpl<CommitId> extends AbstractPrintElementsMan
     myDfsUtil.nodeDfsIterator(rowIndex, new DfsUtil.NextNode() {
       @Override
       public int fun(int currentNode) {
-        for (int downNode : myPrintedLinearGraph.getDownNodes(currentNode)) {
-          if (downNode != LinearGraph.NOT_LOAD_COMMIT && !flags.get(downNode)) {
+        for (int downNode : getDownNodes(myPrintedLinearGraph, currentNode)) {
+          if (!flags.get(downNode)) {
             flags.set(downNode, true);
             return downNode;
           }
@@ -64,7 +66,7 @@ public class PrintElementsManagerImpl<CommitId> extends AbstractPrintElementsMan
     myDfsUtil.nodeDfsIterator(rowIndex, new DfsUtil.NextNode() {
       @Override
       public int fun(int currentNode) {
-        for (int upNode : myPrintedLinearGraph.getUpNodes(currentNode)) {
+        for (int upNode : getUpNodes(myPrintedLinearGraph, currentNode)) {
           if (!flags.get(upNode)) {
             flags.set(upNode, true);
             return upNode;
@@ -88,7 +90,7 @@ public class PrintElementsManagerImpl<CommitId> extends AbstractPrintElementsMan
     myDfsUtil.nodeDfsIterator(fragment.upNodeIndex, new DfsUtil.NextNode() {
       @Override
       public int fun(int currentNode) {
-        for (int downNode : myPrintedLinearGraph.getDownNodes(currentNode)) {
+        for (int downNode : getDownNodes(myPrintedLinearGraph, currentNode)) {
           if (selectedNodes.add(downNode))
             return downNode;
         }

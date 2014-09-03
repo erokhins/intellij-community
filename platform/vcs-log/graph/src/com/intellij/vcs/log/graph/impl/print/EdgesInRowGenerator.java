@@ -15,15 +15,12 @@
  */
 package com.intellij.vcs.log.graph.impl.print;
 
-import com.intellij.util.SmartList;
 import com.intellij.util.containers.SLRUMap;
 import com.intellij.vcs.log.graph.api.LinearGraphWithElementInfo;
 import com.intellij.vcs.log.graph.api.elements.GraphEdge;
-import com.intellij.vcs.log.graph.api.elements.GraphEdgeType;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 public class EdgesInRowGenerator {
@@ -128,8 +125,8 @@ public class EdgesInRowGenerator {
     Set<GraphEdge> edgesInCurrentRow = graphEdges.myEdges;
     int currentRow = graphEdges.myRow;
 
-    edgesInCurrentRow.addAll(createDownEdges(currentRow));
-    edgesInCurrentRow.removeAll(createUpEdges(currentRow + 1));
+    edgesInCurrentRow.addAll(myGraph.getDownEdges(currentRow));
+    edgesInCurrentRow.removeAll(myGraph.getUpEdges(currentRow + 1));
 
     return new GraphEdges(edgesInCurrentRow, currentRow + 1);
   }
@@ -139,27 +136,9 @@ public class EdgesInRowGenerator {
     Set<GraphEdge> edgesInCurrentRow = graphEdges.myEdges;
     int currentRow = graphEdges.myRow;
 
-    edgesInCurrentRow.addAll(createUpEdges(currentRow));
-    edgesInCurrentRow.removeAll(createDownEdges(currentRow - 1));
+    edgesInCurrentRow.addAll(myGraph.getUpEdges(currentRow));
+    edgesInCurrentRow.removeAll(myGraph.getDownEdges(currentRow - 1));
     return new GraphEdges(edgesInCurrentRow, currentRow - 1);
-  }
-
-  public List<GraphEdge> createUpEdges(int nodeIndex) {
-    List<GraphEdge> result = new SmartList<GraphEdge>();
-    for (int upNode : myGraph.getUpNodes(nodeIndex)) {
-      GraphEdgeType type =  myGraph.getEdgeType(upNode, nodeIndex);
-      result.add(new GraphEdge(upNode, nodeIndex, type));
-    }
-    return result;
-  }
-
-  public List<GraphEdge> createDownEdges(int nodeIndex) {
-    List<GraphEdge> result = new SmartList<GraphEdge>();
-    for (int downNode : myGraph.getDownNodes(nodeIndex)) {
-      GraphEdgeType type =  myGraph.getEdgeType(nodeIndex, downNode);
-      result.add(new GraphEdge(nodeIndex, downNode, type));
-    }
-    return result;
   }
 
   private static class GraphEdges {
