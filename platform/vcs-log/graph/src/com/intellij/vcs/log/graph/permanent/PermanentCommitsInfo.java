@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.intellij.vcs.log.graph.api.permanent;
+package com.intellij.vcs.log.graph.permanent;
 
 import org.jetbrains.annotations.NotNull;
 

@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.intellij.vcs.log.graph.impl.permanent;
+package com.intellij.vcs.log.graph.permanent;
 
-import com.intellij.vcs.log.graph.api.GraphLayout;
+import com.intellij.vcs.log.graph.permanent.GraphLayout;
 import com.intellij.vcs.log.graph.utils.IntList;
 import com.intellij.vcs.log.graph.utils.impl.CompressedIntList;
 import org.jetbrains.annotations.NotNull;

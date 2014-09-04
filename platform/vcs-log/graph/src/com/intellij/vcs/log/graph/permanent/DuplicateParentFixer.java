@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.intellij.vcs.log.graph.impl.permanent;
+package com.intellij.vcs.log.graph.permanent;
 
 
 import com.intellij.util.containers.ContainerUtil;

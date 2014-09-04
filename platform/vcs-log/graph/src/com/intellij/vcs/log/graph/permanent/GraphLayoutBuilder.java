@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-package com.intellij.vcs.log.graph.impl.permanent;
+package com.intellij.vcs.log.graph.permanent;
 
-import com.intellij.vcs.log.graph.permanent.LinearGraph;
 import com.intellij.vcs.log.graph.permanent.elements.GraphEdge;
 import com.intellij.vcs.log.graph.permanent.elements.GraphEdgeType;
 import com.intellij.vcs.log.graph.utils.DfsUtil;

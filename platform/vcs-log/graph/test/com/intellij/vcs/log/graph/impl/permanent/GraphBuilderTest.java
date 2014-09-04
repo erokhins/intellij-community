@@ -19,6 +19,8 @@ package com.intellij.vcs.log.graph.impl.permanent;
 import com.intellij.vcs.log.graph.GraphCommit;
 import com.intellij.vcs.log.graph.impl.CommitIdManager;
 import com.intellij.vcs.log.graph.AbstractTestWithTextFile;
+import com.intellij.vcs.log.graph.permanent.PermanentLinearGraphBuilder;
+import com.intellij.vcs.log.graph.permanent.PermanentLinearGraphImpl;
 import org.junit.Test;
 
 import java.io.IOException;

@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-package com.intellij.vcs.log.graph.impl.permanent;
+package com.intellij.vcs.log.graph.permanent;
 
 import com.intellij.util.Function;
 import com.intellij.util.containers.ContainerUtil;
-import com.intellij.vcs.log.graph.api.permanent.PermanentCommitsInfo;
 import com.intellij.vcs.log.graph.utils.IntList;
 import com.intellij.vcs.log.graph.utils.TimestampGetter;
 import com.intellij.vcs.log.graph.utils.impl.CompressedIntList;

@@ -21,6 +21,7 @@ import com.intellij.vcs.log.graph.permanent.LinearGraph;
 import com.intellij.vcs.log.graph.impl.CommitIdManager;
 import com.intellij.vcs.log.graph.impl.facade.ContainingBranchesGetter;
 import com.intellij.vcs.log.graph.AbstractTestWithTextFile;
+import com.intellij.vcs.log.graph.permanent.PermanentLinearGraphBuilder;
 import org.junit.Test;
 
 import java.io.IOException;

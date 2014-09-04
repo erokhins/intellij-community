@@ -22,7 +22,7 @@ import com.intellij.vcs.log.graph.actions.GraphAnswer;
 import com.intellij.vcs.log.graph.actions.GraphMouseAction;
 import com.intellij.vcs.log.graph.permanent.LinearGraph;
 import com.intellij.vcs.log.graph.api.LinearGraphWithCommitInfo;
-import com.intellij.vcs.log.graph.api.permanent.PermanentGraphInfo;
+import com.intellij.vcs.log.graph.permanent.PermanentGraphInfo;
 import com.intellij.vcs.log.graph.permanent.elements.GraphEdge;
 import com.intellij.vcs.log.graph.permanent.elements.GraphElement;
 import com.intellij.vcs.log.graph.permanent.elements.GraphNode;

@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-package com.intellij.vcs.log.graph.impl.permanent;
+package com.intellij.vcs.log.graph.permanent;
 
 import com.intellij.util.SmartList;
 import com.intellij.vcs.log.graph.GraphCommit;
-import com.intellij.vcs.log.graph.permanent.LinearGraph;
 import com.intellij.vcs.log.graph.utils.Flags;
 import com.intellij.vcs.log.graph.utils.impl.BitSetFlags;
 import org.jetbrains.annotations.NotNull;
@@ -29,13 +28,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.intellij.vcs.log.graph.impl.permanent.DuplicateParentFixer.fixDuplicateParentCommits;
-
 public class PermanentLinearGraphBuilder<CommitId> {
 
   @NotNull
   public static <CommitId> PermanentLinearGraphBuilder<CommitId> newInstance(@NotNull List<? extends GraphCommit<CommitId>> graphCommits) {
-    graphCommits = fixDuplicateParentCommits(graphCommits);
+    graphCommits = DuplicateParentFixer.fixDuplicateParentCommits(graphCommits);
     Flags simpleNodes = new BitSetFlags(graphCommits.size());
 
     int longEdgesCount = 0;

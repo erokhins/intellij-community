@@ -18,13 +18,13 @@ package com.intellij.vcs.log.graph;
 
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.util.Function;
-import com.intellij.vcs.log.graph.api.GraphLayout;
+import com.intellij.vcs.log.graph.permanent.GraphLayout;
 import com.intellij.vcs.log.graph.permanent.LinearGraph;
 import com.intellij.vcs.log.graph.api.LinearGraphWithElementInfo;
 import com.intellij.vcs.log.graph.permanent.elements.GraphEdge;
 import com.intellij.vcs.log.graph.permanent.elements.GraphEdgeType;
 import com.intellij.vcs.log.graph.permanent.elements.GraphNodeType;
-import com.intellij.vcs.log.graph.api.permanent.PermanentCommitsInfo;
+import com.intellij.vcs.log.graph.permanent.PermanentCommitsInfo;
 import com.intellij.vcs.log.graph.impl.facade.ContainingBranchesGetter;
 import com.intellij.vcs.log.graph.impl.print.EdgesInRowGenerator;
 import com.intellij.vcs.log.graph.parser.CommitParser;

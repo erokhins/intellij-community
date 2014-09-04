@@ -18,6 +18,7 @@ package com.intellij.vcs.log.graph.impl.visible.adapters;
 
 import com.intellij.util.BooleanFunction;
 import com.intellij.vcs.log.graph.api.*;
+import com.intellij.vcs.log.graph.permanent.GraphLayout;
 import com.intellij.vcs.log.graph.permanent.LinearGraph;
 import com.intellij.vcs.log.graph.permanent.elements.GraphEdgeType;
 import com.intellij.vcs.log.graph.permanent.elements.GraphNodeType;

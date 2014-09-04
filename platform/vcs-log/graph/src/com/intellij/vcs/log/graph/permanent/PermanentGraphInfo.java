@@ -13,13 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.intellij.vcs.log.graph.api.permanent;
+package com.intellij.vcs.log.graph.permanent;
 
 import com.intellij.openapi.util.Condition;
 import com.intellij.vcs.log.graph.GraphColorManager;
 import com.intellij.vcs.log.graph.GraphCommit;
-import com.intellij.vcs.log.graph.api.GraphLayout;
-import com.intellij.vcs.log.graph.permanent.LinearGraph;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
