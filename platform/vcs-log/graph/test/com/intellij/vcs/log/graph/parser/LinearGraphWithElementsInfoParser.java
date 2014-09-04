@@ -20,10 +20,10 @@ import com.intellij.openapi.util.Pair;
 import com.intellij.util.containers.MultiMap;
 import com.intellij.vcs.log.graph.api.LinearGraphWithElementInfo;
 import com.intellij.vcs.log.graph.api.RefactoringLinearGraph;
-import com.intellij.vcs.log.graph.api.elements.GraphEdge;
-import com.intellij.vcs.log.graph.api.elements.GraphEdgeType;
-import com.intellij.vcs.log.graph.api.elements.GraphNode;
-import com.intellij.vcs.log.graph.api.elements.GraphNodeType;
+import com.intellij.vcs.log.graph.permanent.elements.GraphEdge;
+import com.intellij.vcs.log.graph.permanent.elements.GraphEdgeType;
+import com.intellij.vcs.log.graph.permanent.elements.GraphNode;
+import com.intellij.vcs.log.graph.permanent.elements.GraphNodeType;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;

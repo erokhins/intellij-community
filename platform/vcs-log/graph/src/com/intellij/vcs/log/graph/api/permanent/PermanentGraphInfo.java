@@ -19,7 +19,7 @@ import com.intellij.openapi.util.Condition;
 import com.intellij.vcs.log.graph.GraphColorManager;
 import com.intellij.vcs.log.graph.GraphCommit;
 import com.intellij.vcs.log.graph.api.GraphLayout;
-import com.intellij.vcs.log.graph.api.LinearGraph;
+import com.intellij.vcs.log.graph.permanent.LinearGraph;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;

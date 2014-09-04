@@ -21,10 +21,10 @@ import com.intellij.util.SmartList;
 import com.intellij.util.containers.SLRUMap;
 import com.intellij.vcs.log.graph.SimplePrintElement;
 import com.intellij.vcs.log.graph.api.PrintedLinearGraph;
-import com.intellij.vcs.log.graph.api.elements.GraphEdge;
-import com.intellij.vcs.log.graph.api.elements.GraphEdgeType;
-import com.intellij.vcs.log.graph.api.elements.GraphElement;
-import com.intellij.vcs.log.graph.api.elements.GraphNode;
+import com.intellij.vcs.log.graph.permanent.elements.GraphEdge;
+import com.intellij.vcs.log.graph.permanent.elements.GraphEdgeType;
+import com.intellij.vcs.log.graph.permanent.elements.GraphElement;
+import com.intellij.vcs.log.graph.permanent.elements.GraphNode;
 import com.intellij.vcs.log.graph.api.printer.PrintElementsManager;
 import org.jetbrains.annotations.NotNull;
 

@@ -16,7 +16,7 @@
 
 package com.intellij.vcs.log.graph.impl.print.elements;
 
-import com.intellij.vcs.log.graph.api.elements.GraphElement;
+import com.intellij.vcs.log.graph.permanent.elements.GraphElement;
 import com.intellij.vcs.log.graph.api.printer.PrintElementWithGraphElement;
 import com.intellij.vcs.log.graph.api.printer.PrintElementsManager;
 import org.jetbrains.annotations.NotNull;

@@ -17,8 +17,8 @@
 package com.intellij.vcs.log.graph.impl.print.elements;
 
 import com.intellij.vcs.log.graph.EdgePrintElement;
-import com.intellij.vcs.log.graph.api.elements.GraphEdge;
-import com.intellij.vcs.log.graph.api.elements.GraphEdgeType;
+import com.intellij.vcs.log.graph.permanent.elements.GraphEdge;
+import com.intellij.vcs.log.graph.permanent.elements.GraphEdgeType;
 import com.intellij.vcs.log.graph.api.printer.PrintElementsManager;
 import org.jetbrains.annotations.NotNull;
 

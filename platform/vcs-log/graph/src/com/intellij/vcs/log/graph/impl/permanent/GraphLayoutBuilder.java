@@ -16,9 +16,9 @@
 
 package com.intellij.vcs.log.graph.impl.permanent;
 
-import com.intellij.vcs.log.graph.api.LinearGraph;
-import com.intellij.vcs.log.graph.api.elements.GraphEdge;
-import com.intellij.vcs.log.graph.api.elements.GraphEdgeType;
+import com.intellij.vcs.log.graph.permanent.LinearGraph;
+import com.intellij.vcs.log.graph.permanent.elements.GraphEdge;
+import com.intellij.vcs.log.graph.permanent.elements.GraphEdgeType;
 import com.intellij.vcs.log.graph.utils.DfsUtil;
 import org.jetbrains.annotations.NotNull;
 

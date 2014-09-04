@@ -15,7 +15,7 @@
  */
 package com.intellij.vcs.log.graph.impl.facade.bek;
 
-import com.intellij.vcs.log.graph.api.LinearGraph;
+import com.intellij.vcs.log.graph.permanent.LinearGraph;
 import com.intellij.vcs.log.graph.utils.LinearGraphUtils;
 import com.intellij.vcs.log.graph.utils.TimestampGetter;
 import org.jetbrains.annotations.NotNull;

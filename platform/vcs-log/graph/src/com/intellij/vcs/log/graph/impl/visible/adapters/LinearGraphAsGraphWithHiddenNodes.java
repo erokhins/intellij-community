@@ -16,11 +16,11 @@
 
 package com.intellij.vcs.log.graph.impl.visible.adapters;
 
-import com.intellij.vcs.log.graph.api.LinearGraph;
+import com.intellij.vcs.log.graph.permanent.LinearGraph;
 import com.intellij.vcs.log.graph.api.LinearGraphWithHiddenNodes;
 import com.intellij.vcs.log.graph.api.RefactoringLinearGraph;
-import com.intellij.vcs.log.graph.api.elements.GraphEdgeType;
-import com.intellij.vcs.log.graph.api.elements.GraphNodeType;
+import com.intellij.vcs.log.graph.permanent.elements.GraphEdgeType;
+import com.intellij.vcs.log.graph.permanent.elements.GraphNodeType;
 import com.intellij.vcs.log.graph.utils.Flags;
 import com.intellij.vcs.log.graph.utils.IdFlags;
 import com.intellij.vcs.log.graph.utils.ListenerController;

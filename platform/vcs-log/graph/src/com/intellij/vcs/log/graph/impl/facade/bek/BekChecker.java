@@ -16,7 +16,7 @@
 package com.intellij.vcs.log.graph.impl.facade.bek;
 
 import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.vcs.log.graph.api.LinearGraph;
+import com.intellij.vcs.log.graph.permanent.LinearGraph;
 import org.jetbrains.annotations.NotNull;
 
 import static com.intellij.vcs.log.graph.utils.LinearGraphUtils.getDownNodes;

@@ -17,7 +17,7 @@
 package com.intellij.vcs.log.graph.impl.permanent;
 
 import com.intellij.util.SmartList;
-import com.intellij.vcs.log.graph.api.LinearGraph;
+import com.intellij.vcs.log.graph.permanent.LinearGraph;
 import com.intellij.vcs.log.graph.api.RefactoringLinearGraph;
 import com.intellij.vcs.log.graph.utils.Flags;
 import com.intellij.vcs.log.graph.utils.IntList;

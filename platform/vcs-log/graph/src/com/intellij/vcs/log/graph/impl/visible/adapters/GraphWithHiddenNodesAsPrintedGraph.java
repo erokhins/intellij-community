@@ -18,8 +18,9 @@ package com.intellij.vcs.log.graph.impl.visible.adapters;
 
 import com.intellij.util.BooleanFunction;
 import com.intellij.vcs.log.graph.api.*;
-import com.intellij.vcs.log.graph.api.elements.GraphEdgeType;
-import com.intellij.vcs.log.graph.api.elements.GraphNodeType;
+import com.intellij.vcs.log.graph.permanent.LinearGraph;
+import com.intellij.vcs.log.graph.permanent.elements.GraphEdgeType;
+import com.intellij.vcs.log.graph.permanent.elements.GraphNodeType;
 import com.intellij.vcs.log.graph.utils.IntToIntMap;
 import com.intellij.vcs.log.graph.utils.UpdatableIntToIntMap;
 import com.intellij.vcs.log.graph.utils.impl.ListIntToIntMap;

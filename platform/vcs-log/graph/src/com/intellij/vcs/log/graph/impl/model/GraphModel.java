@@ -15,9 +15,8 @@
  */
 package com.intellij.vcs.log.graph.impl.model;
 
-import com.intellij.vcs.log.graph.api.LinearGraph;
-import com.intellij.vcs.log.graph.api.elements.GraphEdge;
-import com.intellij.vcs.log.graph.api.elements.GraphEdgeType;
+import com.intellij.vcs.log.graph.permanent.LinearGraph;
+import com.intellij.vcs.log.graph.permanent.elements.GraphEdgeType;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;

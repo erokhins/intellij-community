@@ -19,7 +19,7 @@ package com.intellij.vcs.log.graph.impl.print;
 import com.intellij.util.containers.HashSet;
 import com.intellij.vcs.log.graph.GraphColorManager;
 import com.intellij.vcs.log.graph.api.LinearGraphWithCommitInfo;
-import com.intellij.vcs.log.graph.api.elements.GraphElement;
+import com.intellij.vcs.log.graph.permanent.elements.GraphElement;
 import com.intellij.vcs.log.graph.impl.visible.FragmentGenerator;
 import com.intellij.vcs.log.graph.utils.DfsUtil;
 import com.intellij.vcs.log.graph.utils.Flags;

@@ -15,8 +15,8 @@
  */
 package com.intellij.vcs.log.graph.api;
 
-import com.intellij.vcs.log.graph.api.elements.GraphEdge;
-import com.intellij.vcs.log.graph.api.elements.GraphNode;
+import com.intellij.vcs.log.graph.permanent.elements.GraphEdge;
+import com.intellij.vcs.log.graph.permanent.elements.GraphNode;
 import com.intellij.vcs.log.graph.utils.ListenerController;
 import org.jetbrains.annotations.NotNull;
 

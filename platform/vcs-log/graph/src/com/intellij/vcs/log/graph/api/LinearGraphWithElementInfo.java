@@ -15,8 +15,9 @@
  */
 package com.intellij.vcs.log.graph.api;
 
-import com.intellij.vcs.log.graph.api.elements.GraphEdgeType;
-import com.intellij.vcs.log.graph.api.elements.GraphNodeType;
+import com.intellij.vcs.log.graph.permanent.LinearGraph;
+import com.intellij.vcs.log.graph.permanent.elements.GraphEdgeType;
+import com.intellij.vcs.log.graph.permanent.elements.GraphNodeType;
 import org.jetbrains.annotations.NotNull;
 
 /**

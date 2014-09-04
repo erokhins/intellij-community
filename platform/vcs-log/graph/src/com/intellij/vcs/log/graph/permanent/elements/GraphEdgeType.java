@@ -13,33 +13,42 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.intellij.vcs.log.graph.api.elements;
+package com.intellij.vcs.log.graph.permanent.elements;
 
 import org.jetbrains.annotations.NotNull;
 
-public enum GraphNodeType {
-  USUAL(0),
-  NOT_LOAD_COMMIT(-1),
-  GRAY(1);
+public enum GraphEdgeType {
+  USUAL(0, true),  // between visible delegate nodes
+  DOTTED(1, false), // collapsed fragment
+  NOT_LOAD_COMMIT(-2, true), // edge to not load commit
+  DOTTED_ARROW_UP(2, false),
+  DOTTED_ARROW_DOWN(3, false);
 
   private final byte myType;
+  private final boolean myIsPermanentEdge;
 
-  GraphNodeType(int type) {
-    myType = (byte)type;
+  GraphEdgeType(int type, boolean isPermanentEdge) {
+    this.myIsPermanentEdge = isPermanentEdge;
+    this.myType = (byte) type;
   }
 
   public byte getType() {
     return myType;
   }
 
+  public boolean isPermanentEdge() {
+    return myIsPermanentEdge;
+  }
+
   @NotNull
-  public static GraphNodeType getByType(byte type) {
+  public static GraphEdgeType getByType(byte type) {
     switch (type) {
       case 0: return USUAL;
-      case -1: return NOT_LOAD_COMMIT;
-      case 1: return GRAY;
+      case 1: return DOTTED;
+      case 2: return DOTTED_ARROW_UP;
+      case 3: return DOTTED_ARROW_DOWN;
+      case -2: return NOT_LOAD_COMMIT;
     }
     throw new IllegalArgumentException("Unknown type: " + type);
   }
-
 }

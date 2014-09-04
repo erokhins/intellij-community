@@ -17,7 +17,7 @@ package com.intellij.vcs.log.graph.impl.print;
 
 import com.intellij.util.containers.SLRUMap;
 import com.intellij.vcs.log.graph.api.LinearGraphWithElementInfo;
-import com.intellij.vcs.log.graph.api.elements.GraphEdge;
+import com.intellij.vcs.log.graph.permanent.elements.GraphEdge;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;

@@ -16,9 +16,9 @@
 package com.intellij.vcs.log.graph.impl.model;
 
 import com.intellij.util.SmartList;
-import com.intellij.vcs.log.graph.api.LinearGraph;
-import com.intellij.vcs.log.graph.api.elements.GraphEdge;
-import com.intellij.vcs.log.graph.api.elements.GraphEdgeType;
+import com.intellij.vcs.log.graph.permanent.LinearGraph;
+import com.intellij.vcs.log.graph.permanent.elements.GraphEdge;
+import com.intellij.vcs.log.graph.permanent.elements.GraphEdgeType;
 import com.intellij.vcs.log.graph.utils.Flags;
 import com.intellij.vcs.log.graph.utils.IntIntMultiMap;
 import com.intellij.vcs.log.graph.utils.UpdatableIntToIntMap;
@@ -30,7 +30,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Collection;
 import java.util.List;
 
-import static com.intellij.vcs.log.graph.api.elements.GraphEdgeType.*;
+import static com.intellij.vcs.log.graph.permanent.elements.GraphEdgeType.*;
 import static com.intellij.vcs.log.graph.impl.model.EdgeTypeConverter.*;
 
 public class GraphModelImpl implements GraphModel {
