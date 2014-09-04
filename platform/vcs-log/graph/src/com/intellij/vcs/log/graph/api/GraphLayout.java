@@ -21,6 +21,6 @@ package com.intellij.vcs.log.graph.api;
 public interface GraphLayout {
   // nodeIndex must be in [0..graph.nodesCount() - 1]
 
-  int getLayoutIndex(int nodeIndex);
-  int getOneOfHeadNodeIndex(int nodeIndex);
+  int getLayoutIndex(int nodeId);
+  int getOneOfHeadNodeId(int nodeId);
 }

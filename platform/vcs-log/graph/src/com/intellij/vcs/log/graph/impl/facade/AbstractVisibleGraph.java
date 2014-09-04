@@ -48,7 +48,7 @@ public abstract class AbstractVisibleGraph<CommitId> implements VisibleGraph<Com
     if (heads == null) {
       return new LinearGraphAsGraphWithHiddenNodes(permanentGraph.getPermanentLinearGraph());
     } else {
-      Set<Integer> headIndexes = permanentGraph.getPermanentCommitsInfo().convertToCommitIndexes(heads);
+      Set<Integer> headIndexes = permanentGraph.getPermanentCommitsInfo().convertToNodeId(heads);
       if (headIndexes.contains(-1))
         throw new IllegalStateException();
       Flags visibleNodes = CurrentBranches.getVisibleNodes(permanentGraph.getPermanentLinearGraph(), headIndexes);

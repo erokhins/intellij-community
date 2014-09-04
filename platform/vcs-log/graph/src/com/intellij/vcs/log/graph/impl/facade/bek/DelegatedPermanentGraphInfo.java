@@ -51,25 +51,25 @@ public class DelegatedPermanentGraphInfo<CommitId> implements PermanentGraphInfo
     return new PermanentCommitsInfo<CommitId>() {
       @NotNull
       @Override
-      public CommitId getCommitId(int permanentNodeIndex) {
-        return commitsInfo.getCommitId(myBekIntMap.getUsualIndex(permanentNodeIndex));
+      public CommitId getCommitId(int nodeId) {
+        return commitsInfo.getCommitId(myBekIntMap.getUsualIndex(nodeId));
       }
 
       @Override
-      public long getTimestamp(int permanentNodeIndex) {
-        return commitsInfo.getTimestamp(myBekIntMap.getUsualIndex(permanentNodeIndex));
+      public long getTimestamp(int nodeId) {
+        return commitsInfo.getTimestamp(myBekIntMap.getUsualIndex(nodeId));
       }
 
       @Override
-      public int getPermanentNodeIndex(@NotNull CommitId commitId) {
-        int usualIndex = commitsInfo.getPermanentNodeIndex(commitId);
+      public int getNodeId(@NotNull CommitId commitId) {
+        int usualIndex = commitsInfo.getNodeId(commitId);
         return myBekIntMap.getBekIndex(usualIndex);
       }
 
       @NotNull
       @Override
-      public Set<Integer> convertToCommitIndexes(Collection<CommitId> heads) {
-        Set<Integer> usualIndexes = commitsInfo.convertToCommitIndexes(heads);
+      public Set<Integer> convertToNodeId(@NotNull Collection<CommitId> commitIds) {
+        Set<Integer> usualIndexes = commitsInfo.convertToNodeId(commitIds);
         return ContainerUtil.map2Set(usualIndexes, new Function<Integer, Integer>() {
           @Override
           public Integer fun(Integer integer) {
@@ -120,13 +120,13 @@ public class DelegatedPermanentGraphInfo<CommitId> implements PermanentGraphInfo
     final GraphLayout graphLayout = myDelegateInfo.getPermanentGraphLayout();
     return new GraphLayout() {
       @Override
-      public int getLayoutIndex(int nodeIndex) {
-        return graphLayout.getLayoutIndex(myBekIntMap.getUsualIndex(nodeIndex));
+      public int getLayoutIndex(int nodeId) {
+        return graphLayout.getLayoutIndex(myBekIntMap.getUsualIndex(nodeId));
       }
 
       @Override
-      public int getOneOfHeadNodeIndex(int nodeIndex) {
-        int usualIndex = graphLayout.getOneOfHeadNodeIndex(myBekIntMap.getUsualIndex(nodeIndex));
+      public int getOneOfHeadNodeId(int nodeId) {
+        int usualIndex = graphLayout.getOneOfHeadNodeId(myBekIntMap.getUsualIndex(nodeId));
         return myBekIntMap.getBekIndex(usualIndex);
       }
     };

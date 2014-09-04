@@ -65,7 +65,7 @@ public class GraphWithHiddenNodesAsPrintedGraph extends RefactoringLinearGraph i
 
   @Override
   public int getHeadLayoutIndex(int nodeIndex) {
-    int headNodeIndex = myPermanentGraphLayout.getOneOfHeadNodeIndex(getIndexInPermanentGraph(nodeIndex));
+    int headNodeIndex = myPermanentGraphLayout.getOneOfHeadNodeId(getIndexInPermanentGraph(nodeIndex));
     return myPermanentGraphLayout.getLayoutIndex(headNodeIndex);
   }
 

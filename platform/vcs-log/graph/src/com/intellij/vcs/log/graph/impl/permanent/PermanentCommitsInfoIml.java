@@ -99,13 +99,13 @@ public class PermanentCommitsInfoIml<CommitId> implements PermanentCommitsInfo<C
 
   @Override
   @NotNull
-  public CommitId getCommitId(int permanentNodeIndex) {
-    return myCommitIdIndexes.get(permanentNodeIndex);
+  public CommitId getCommitId(int nodeId) {
+    return myCommitIdIndexes.get(nodeId);
   }
 
   @Override
-  public long getTimestamp(int permanentNodeIndex) {
-    return myTimestampGetter.getTimestamp(permanentNodeIndex);
+  public long getTimestamp(int nodeId) {
+    return myTimestampGetter.getTimestamp(nodeId);
   }
 
   @NotNull
@@ -115,7 +115,7 @@ public class PermanentCommitsInfoIml<CommitId> implements PermanentCommitsInfo<C
 
   // todo optimize with special map
   @Override
-  public int getPermanentNodeIndex(@NotNull CommitId commitId) {
+  public int getNodeId(@NotNull CommitId commitId) {
     return myCommitIdIndexes.indexOf(commitId);
   }
 
@@ -140,7 +140,7 @@ public class PermanentCommitsInfoIml<CommitId> implements PermanentCommitsInfo<C
   }
 
   @NotNull
-  public Set<Integer> convertToCommitIndexes(@NotNull Collection<CommitId> commitIds) {
+  public Set<Integer> convertToNodeId(@NotNull Collection<CommitId> commitIds) {
     Set<Integer> result = ContainerUtil.newHashSet();
     for (int i = 0; i < myCommitIdIndexes.size(); i++) {
       CommitId commitId = myCommitIdIndexes.get(i);

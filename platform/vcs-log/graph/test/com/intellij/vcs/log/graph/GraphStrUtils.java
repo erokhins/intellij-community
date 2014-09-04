@@ -106,7 +106,7 @@ public class GraphStrUtils {
         s.append("\n");
 
       CommitId commitId = commitsInfo.getCommitId(i);
-      int commitIndex = commitsInfo.getPermanentNodeIndex(commitId);
+      int commitIndex = commitsInfo.getNodeId(commitId);
       long timestamp = commitsInfo.getTimestamp(i);
 
       s.append(commitIndex).append(CommitParser.SEPARATOR);
@@ -122,7 +122,7 @@ public class GraphStrUtils {
       if (nodeIndex != 0)
         s.append("\n");
 
-      s.append(graphLayout.getLayoutIndex(nodeIndex)).append(CommitParser.SEPARATOR).append(graphLayout.getOneOfHeadNodeIndex(nodeIndex));
+      s.append(graphLayout.getLayoutIndex(nodeIndex)).append(CommitParser.SEPARATOR).append(graphLayout.getOneOfHeadNodeId(nodeIndex));
     }
     return s.toString();
   }

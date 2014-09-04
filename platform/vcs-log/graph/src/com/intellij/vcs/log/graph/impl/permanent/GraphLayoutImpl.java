@@ -38,13 +38,13 @@ public class GraphLayoutImpl implements GraphLayout {
   }
 
   @Override
-  public int getLayoutIndex(int nodeIndex) {
-    return myLayoutIndex.get(nodeIndex);
+  public int getLayoutIndex(int nodeId) {
+    return myLayoutIndex.get(nodeId);
   }
 
   @Override
-  public int getOneOfHeadNodeIndex(int nodeIndex) {
-    return getHeadNodeIndex(getLayoutIndex(nodeIndex));
+  public int getOneOfHeadNodeId(int nodeId) {
+    return getHeadNodeIndex(getLayoutIndex(nodeId));
   }
 
   public int getHeadNodeIndex(int layoutIndex) {

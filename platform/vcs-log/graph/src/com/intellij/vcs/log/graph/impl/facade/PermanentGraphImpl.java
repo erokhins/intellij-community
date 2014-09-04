@@ -92,7 +92,7 @@ public class PermanentGraphImpl<CommitId> implements PermanentGraph<CommitId>, P
     myGraphColorManager = graphColorManager;
     myBranchesCommitId = branchesCommitId;
     myCommitsWithNotLoadParent = commitsWithNotLoadParent;
-    myBranchNodeIndexes = permanentCommitsInfo.convertToCommitIndexes(branchesCommitId);
+    myBranchNodeIndexes = permanentCommitsInfo.convertToNodeId(branchesCommitId);
     myBranchesGetter = new ContainingBranchesGetter(permanentLinearGraph, myBranchNodeIndexes);
     myBekGraphInfo = createBekSort();
   }
@@ -150,14 +150,14 @@ public class PermanentGraphImpl<CommitId> implements PermanentGraph<CommitId>, P
   @NotNull
   @Override
   public List<CommitId> getChildren(@NotNull CommitId commit) {
-    int commitIndex = myPermanentCommitsInfo.getPermanentNodeIndex(commit);
+    int commitIndex = myPermanentCommitsInfo.getNodeId(commit);
     return myPermanentCommitsInfo.convertToCommitIdList(LinearGraphUtils.getUpNodes(myPermanentLinearGraph, commitIndex));
   }
 
   @NotNull
   @Override
   public Set<CommitId> getContainingBranches(@NotNull CommitId commit) {
-    int commitIndex = myPermanentCommitsInfo.getPermanentNodeIndex(commit);
+    int commitIndex = myPermanentCommitsInfo.getNodeId(commit);
     return myPermanentCommitsInfo.convertToCommitIdSet(myBranchesGetter.getBranchNodeIndexes(commitIndex));
   }
 
