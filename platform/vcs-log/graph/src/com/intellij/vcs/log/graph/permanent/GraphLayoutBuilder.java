@@ -17,7 +17,6 @@
 package com.intellij.vcs.log.graph.permanent;
 
 import com.intellij.vcs.log.graph.permanent.elements.GraphEdge;
-import com.intellij.vcs.log.graph.permanent.elements.GraphEdgeType;
 import com.intellij.vcs.log.graph.utils.DfsUtil;
 import org.jetbrains.annotations.NotNull;
 
@@ -76,8 +75,9 @@ public class GraphLayoutBuilder {
 
         int childWithoutLayoutIndex = -1;
         for (GraphEdge edgeToChild : myGraph.getDownEdges(currentNode)) {
-          if (edgeToChild.getType() != GraphEdgeType.NOT_LOAD_COMMIT && myLayoutIndex[edgeToChild.getDownNodeIndex()] == 0) {
-            childWithoutLayoutIndex = edgeToChild.getDownNodeIndex();
+          Integer downNodeIndex = edgeToChild.getDownNodeIndex();
+          if (downNodeIndex != null && myLayoutIndex[downNodeIndex] == 0) {
+            childWithoutLayoutIndex = downNodeIndex;
             break;
           }
         }

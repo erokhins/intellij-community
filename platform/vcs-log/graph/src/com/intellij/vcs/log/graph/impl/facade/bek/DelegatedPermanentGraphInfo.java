@@ -152,7 +152,7 @@ public class DelegatedPermanentGraphInfo<CommitId> implements PermanentGraphInfo
 
   @NotNull
   @Override
-  public Map<CommitId, GraphCommit<CommitId>> getCommitsWithNotLoadParent() {
-    return myDelegateInfo.getCommitsWithNotLoadParent();
+  public Map<CommitId, GraphCommit<CommitId>> getNotLoadCommits() {
+    return myDelegateInfo.getNotLoadCommits();
   }
 }

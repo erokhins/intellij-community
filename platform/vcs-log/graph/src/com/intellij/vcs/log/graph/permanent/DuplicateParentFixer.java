@@ -27,6 +27,7 @@ public class DuplicateParentFixer {
 
   public static <CommitId> AbstractList<? extends GraphCommit<CommitId>> fixDuplicateParentCommits(final List<? extends GraphCommit<CommitId>> finalCommits) {
     return new AbstractList<GraphCommit<CommitId>>() {
+      @NotNull
       @Override
       public GraphCommit<CommitId> get(int index) {
         return fixParentsDuplicate(finalCommits.get(index));

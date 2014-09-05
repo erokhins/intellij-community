@@ -74,27 +74,20 @@ public class GraphStrUtils {
     return s.toString();
   }
 
-  public static <CommitId extends Comparable<CommitId>> String commitsWithNotLoadParentMapToStr(Map<CommitId, GraphCommit<CommitId>> commitMap,
+  public static <CommitId extends Comparable<CommitId>> String commitsWithNotLoadParentMapToStr(Map<Integer, CommitId> notLoadCommitMap,
                                                                                                 Function<CommitId, String> toStr) {
-    List<CommitId> hashes = new ArrayList<CommitId>(commitMap.keySet());
-    Collections.sort(hashes);
+    List<Integer> nodeIds = new ArrayList<Integer>(notLoadCommitMap.keySet());
+    Collections.sort(nodeIds);
 
     StringBuilder s = new StringBuilder();
-    for (int i = 0; i < hashes.size(); i++) {
+    for (int i = 0; i < nodeIds.size(); i++) {
       if (i != 0)
         s.append("\n");
 
-      CommitId hash = hashes.get(i);
-      GraphCommit<CommitId> commit = commitMap.get(hash);
-      assertEquals(toStr.fun(hash), toStr.fun(commit.getId()));
+      Integer nodeId = nodeIds.get(i);
+      CommitId commitId = notLoadCommitMap.get(nodeId);
 
-      s.append(toStr.fun(hash)).append(CommitParser.SEPARATOR);
-      List<CommitId> parentIndices = commit.getParents();
-      for (int j = 0 ; j < parentIndices.size(); j++) {
-        if (j > 0)
-          s.append(" ");
-        s.append(toStr.fun(parentIndices.get(j)));
-      }
+      s.append(nodeId).append(":").append(toStr.fun(commitId));
     }
     return s.toString();
   }

@@ -44,10 +44,10 @@ public abstract class GraphBuilderTest<CommitId extends Comparable<CommitId>> ex
     PermanentLinearGraphImpl graph = graphBuilder.build();
 
     String actual = linearGraphToStr(graph);
-    Map<CommitId, GraphCommit<CommitId>> commitsWithNotLoadParent = graphBuilder.getCommitsWithNotLoadParent();
-    if (!commitsWithNotLoadParent.isEmpty()) {
+    Map<Integer, CommitId> notLoadCommits = graphBuilder.getNotLoadCommits();
+    if (!notLoadCommits.isEmpty()) {
       actual += "\nNOT LOAD MAP:\n";
-      actual += commitsWithNotLoadParentMapToStr(commitsWithNotLoadParent, getCommitIdManager().getToStrFunction());
+      actual += commitsWithNotLoadParentMapToStr(notLoadCommits, getCommitIdManager().getToStrFunction());
     }
     assertEquals(out, actual);
   }

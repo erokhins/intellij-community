@@ -72,7 +72,7 @@ public class PermanentLinearGraphBuilder<CommitId> {
   private final Map<CommitId, List<Integer>> upAdjacentNodes = new HashMap<CommitId, List<Integer>>();
 
   // commitHash -> GraphCommit
-  private final Map<CommitId, GraphCommit<CommitId>> commitsWithNotLoadParent = new HashMap<CommitId, GraphCommit<CommitId>>();
+  private final Map<Integer, CommitId> myNotLoadCommits = new HashMap<Integer, CommitId>();
 
   private PermanentLinearGraphBuilder(List<? extends GraphCommit<CommitId>> commits, Flags simpleNodes, int longEdgesCount) {
     myCommits = commits;
@@ -91,22 +91,6 @@ public class PermanentLinearGraphBuilder<CommitId> {
       upAdjacentNodes.put(downCommitId, upNodes);
     }
     upNodes.add(upNodeIndex);
-  }
-
-  private void addCommitWithNotLoadParent(int nodeIndex) {
-    GraphCommit<CommitId> commit = myCommits.get(nodeIndex);
-    commitsWithNotLoadParent.put(commit.getId(), commit);
-  }
-
-  private void fixUnderdoneEdgeForNotLoadCommit(int upNodeIndex) {
-    for (int edgeIndex = myNodeToEdgeIndex[upNodeIndex]; edgeIndex < myNodeToEdgeIndex[upNodeIndex + 1]; edgeIndex++) {
-      if (myLongEdges[edgeIndex] == -1) {
-        addCommitWithNotLoadParent(upNodeIndex);
-        myLongEdges[edgeIndex] = LinearGraph.NOT_LOAD_COMMIT;
-        return;
-      }
-    }
-    throw new IllegalStateException("Not found underdone edge to not load commit for node: " + upNodeIndex);
   }
 
   private void fixUnderdoneEdge(int upNodeIndex, int downNodeIndex, CommitId downCommitId) {
@@ -157,10 +141,23 @@ public class PermanentLinearGraphBuilder<CommitId> {
     myNodeToEdgeIndex[nodeIndex + 1] = edgeIndex;
   }
 
+  private void fixUnderdoneEdgeForNotLoadCommit(int upNodeIndex, int notLoadId) {
+    for (int edgeIndex = myNodeToEdgeIndex[upNodeIndex]; edgeIndex < myNodeToEdgeIndex[upNodeIndex + 1]; edgeIndex++) {
+      if (myLongEdges[edgeIndex] == -1) {
+        myLongEdges[edgeIndex] = notLoadId;
+        return;
+      }
+    }
+    throw new IllegalStateException("Not found underdone edge to not load commit for node: " + upNodeIndex);
+  }
+
   private void fixUnderdoneEdges() {
-    for (List<Integer> upNodes : upAdjacentNodes.values()) {
-      for (Integer upNodeIndex : upNodes)
-        fixUnderdoneEdgeForNotLoadCommit(upNodeIndex);
+    for (CommitId notLoadCommit : upAdjacentNodes.keySet()) {
+      int notLoadId = -(myNotLoadCommits.size() + 2);
+      myNotLoadCommits.put(notLoadId, notLoadCommit);
+      for (int upNodeIndex : upAdjacentNodes.get(notLoadCommit)) {
+        fixUnderdoneEdgeForNotLoadCommit(upNodeIndex, notLoadId);
+      }
     }
   }
 
@@ -174,7 +171,7 @@ public class PermanentLinearGraphBuilder<CommitId> {
     return new PermanentLinearGraphImpl(mySimpleNodes, myNodeToEdgeIndex, myLongEdges);
   }
 
-  public Map<CommitId, GraphCommit<CommitId>> getCommitsWithNotLoadParent() {
-    return commitsWithNotLoadParent;
+  public Map<Integer, CommitId> getNotLoadCommits() {
+    return myNotLoadCommits;
   }
 }

@@ -36,5 +36,5 @@ public interface PermanentGraphInfo<CommitId> {
   @NotNull
   GraphColorManager<CommitId> getGraphColorManager();
   @NotNull
-  Map<CommitId, GraphCommit<CommitId>> getCommitsWithNotLoadParent();
+  Map<CommitId, GraphCommit<CommitId>> getNotLoadCommits();
 }

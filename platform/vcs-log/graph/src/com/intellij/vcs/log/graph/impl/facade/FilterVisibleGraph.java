@@ -55,7 +55,7 @@ public class FilterVisibleGraph<CommitId> extends AbstractVisibleGraph<CommitId>
 
     FilterPrintElementsManager printElementsManager = new FilterPrintElementsManager<CommitId>(graphWithCommitInfo,
                                                                                      permanentGraph.getGraphColorManager());
-    return new FilterVisibleGraph<CommitId>(graphWithCommitInfo, filterGraphWithHiddenNodes, permanentGraph.getCommitsWithNotLoadParent(),
+    return new FilterVisibleGraph<CommitId>(graphWithCommitInfo, filterGraphWithHiddenNodes, permanentGraph.getNotLoadCommits(),
                                             printElementsManager);
   }
 
