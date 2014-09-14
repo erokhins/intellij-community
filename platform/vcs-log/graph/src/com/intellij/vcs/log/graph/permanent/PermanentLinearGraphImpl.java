@@ -19,6 +19,7 @@ package com.intellij.vcs.log.graph.permanent;
 import com.intellij.util.SmartList;
 import com.intellij.vcs.log.graph.permanent.elements.GraphEdge;
 import com.intellij.vcs.log.graph.permanent.elements.GraphEdgeType;
+import com.intellij.vcs.log.graph.permanent.elements.GraphNode;
 import com.intellij.vcs.log.graph.utils.Flags;
 import com.intellij.vcs.log.graph.utils.IntList;
 import com.intellij.vcs.log.graph.utils.impl.CompressedIntList;
@@ -93,5 +94,11 @@ public class PermanentLinearGraphImpl implements LinearGraph {
     }
 
     return result;
+  }
+
+  @NotNull
+  @Override
+  public GraphNode getGraphNode(int nodeIndex) {
+    return new GraphNode(nodeIndex);
   }
 }

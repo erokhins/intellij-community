@@ -19,6 +19,7 @@ import com.intellij.util.SmartList;
 import com.intellij.vcs.log.graph.permanent.LinearGraph;
 import com.intellij.vcs.log.graph.permanent.elements.GraphEdge;
 import com.intellij.vcs.log.graph.permanent.elements.GraphEdgeType;
+import com.intellij.vcs.log.graph.permanent.elements.GraphNode;
 import com.intellij.vcs.log.graph.utils.Flags;
 import com.intellij.vcs.log.graph.utils.IntIntMultiMap;
 import com.intellij.vcs.log.graph.utils.UpdatableIntToIntMap;
@@ -216,6 +217,12 @@ public class GraphModelImpl implements GraphModel {
 
       addToResultAdditionEdges(result, nodeIndex, nodeId, true);
       return result;
+    }
+
+    @NotNull
+    @Override
+    public GraphNode getGraphNode(int nodeIndex) {
+      throw new UnsupportedOperationException(); // todo
     }
 
     private void addToResultAdditionEdges(List<GraphEdge> result, int nodeIndex, int nodeId, boolean toDown) {

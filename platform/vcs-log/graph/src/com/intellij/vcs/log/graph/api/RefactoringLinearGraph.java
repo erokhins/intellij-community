@@ -19,6 +19,7 @@ import com.intellij.util.SmartList;
 import com.intellij.vcs.log.graph.permanent.LinearGraph;
 import com.intellij.vcs.log.graph.permanent.elements.GraphEdge;
 import com.intellij.vcs.log.graph.permanent.elements.GraphEdgeType;
+import com.intellij.vcs.log.graph.permanent.elements.GraphNode;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -47,5 +48,11 @@ public abstract class RefactoringLinearGraph implements LinearGraph {
       }
     }
     return result;
+  }
+
+  @NotNull
+  @Override
+  public GraphNode getGraphNode(int nodeIndex) {
+    return null;
   }
 }

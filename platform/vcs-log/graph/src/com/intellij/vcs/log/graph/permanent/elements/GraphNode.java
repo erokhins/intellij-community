@@ -19,21 +19,27 @@ package com.intellij.vcs.log.graph.permanent.elements;
 import org.jetbrains.annotations.NotNull;
 
 public final class GraphNode implements GraphElement {
+  private final int myNodeId;
   private final int myNodeIndex;
   @NotNull
   private final GraphNodeType myType;
 
   public GraphNode(int nodeIndex) {
-    this(nodeIndex, GraphNodeType.USUAL);
+    this(nodeIndex, nodeIndex, GraphNodeType.USUAL);
   }
 
-  public GraphNode(int nodeIndex, @NotNull GraphNodeType type) {
+  public GraphNode(int nodeId, int nodeIndex, @NotNull GraphNodeType type) {
+    myNodeId = nodeId;
     myNodeIndex = nodeIndex;
     myType = type;
   }
 
   public int getNodeIndex() {
     return myNodeIndex;
+  }
+
+  public int getNodeId() {
+    return myNodeId;
   }
 
   @NotNull

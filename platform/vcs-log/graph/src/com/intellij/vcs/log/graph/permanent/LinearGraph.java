@@ -16,6 +16,7 @@
 package com.intellij.vcs.log.graph.permanent;
 
 import com.intellij.vcs.log.graph.permanent.elements.GraphEdge;
+import com.intellij.vcs.log.graph.permanent.elements.GraphNode;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -46,4 +47,6 @@ public interface LinearGraph {
   @NotNull
   List<GraphEdge> getDownEdges(int nodeIndex);
 
+  @NotNull
+  GraphNode getGraphNode(int nodeIndex);
 }
