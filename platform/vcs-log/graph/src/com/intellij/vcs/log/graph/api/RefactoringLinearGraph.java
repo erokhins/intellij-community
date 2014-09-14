@@ -55,4 +55,9 @@ public abstract class RefactoringLinearGraph implements LinearGraph {
   public GraphNode getGraphNode(int nodeIndex) {
     return null;
   }
+
+  @Override
+  public int getNodeIndexById(int nodeId) {
+    return -1;
+  }
 }

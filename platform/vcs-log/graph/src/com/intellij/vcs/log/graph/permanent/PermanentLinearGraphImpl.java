@@ -101,4 +101,12 @@ public class PermanentLinearGraphImpl implements LinearGraph {
   public GraphNode getGraphNode(int nodeIndex) {
     return new GraphNode(nodeIndex);
   }
+
+  @Override
+  public int getNodeIndexById(int nodeId) {
+    if (nodeId >= 0 && nodeId < nodesCount())
+      return nodeId;
+    else
+      return -1;
+  }
 }

@@ -49,4 +49,7 @@ public interface LinearGraph {
 
   @NotNull
   GraphNode getGraphNode(int nodeIndex);
+
+  // return -1, if node doesn't exist
+  int getNodeIndexById(int nodeId);
 }
