@@ -15,24 +15,21 @@
  */
 package com.intellij.vcs.log.graph.impl.model;
 
+import com.intellij.util.Function;
 import com.intellij.util.SmartList;
+import com.intellij.vcs.log.graph.collapsing.GraphAdditionEdges;
 import com.intellij.vcs.log.graph.permanent.LinearGraph;
 import com.intellij.vcs.log.graph.permanent.elements.GraphEdge;
 import com.intellij.vcs.log.graph.permanent.elements.GraphEdgeType;
 import com.intellij.vcs.log.graph.permanent.elements.GraphNode;
 import com.intellij.vcs.log.graph.utils.Flags;
-import com.intellij.vcs.log.graph.utils.IntIntMultiMap;
 import com.intellij.vcs.log.graph.utils.UpdatableIntToIntMap;
 import com.intellij.vcs.log.graph.utils.impl.BitSetFlags;
 import com.intellij.vcs.log.graph.utils.impl.ListIntToIntMap;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.List;
-
-import static com.intellij.vcs.log.graph.permanent.elements.GraphEdgeType.*;
-import static com.intellij.vcs.log.graph.impl.model.EdgeTypeConverter.*;
 
 public class GraphModelImpl implements GraphModel {
   @NotNull
@@ -44,15 +41,31 @@ public class GraphModelImpl implements GraphModel {
   @NotNull
   private final UpdatableIntToIntMap myDelegateIntToIntMap;
   @NotNull
-  private final IntIntMultiMap myAdditionEdges = new IntIntMultiMap();
-  @NotNull
   private final CompiledGraph myCompiledGraph = new CompiledGraph();
+  @NotNull
+  private final GraphAdditionEdges myGraphAdditionEdges;
 
 
   public GraphModelImpl(@NotNull LinearGraph delegateGraph) {
     myDelegateGraph = delegateGraph;
     myVisibleDelegateNodes = new BitSetFlags(delegateGraph.nodesCount());
     myDelegateIntToIntMap = ListIntToIntMap.newInstance(myVisibleDelegateNodes);
+    myGraphAdditionEdges = createGraphAdditionEdges();
+  }
+
+  @NotNull
+  private GraphAdditionEdges createGraphAdditionEdges() {
+    return new GraphAdditionEdges(new Function<Integer, Integer>() {
+      @Override
+      public Integer fun(Integer nodeId) {
+        return getNodeIndex(nodeId);
+      }
+    }, new Function<Integer, Integer>() {
+      @Override
+      public Integer fun(Integer nodeIndex) {
+        return getNodeId(nodeIndex);
+      }
+    });
   }
 
   @NotNull
@@ -135,15 +148,13 @@ public class GraphModelImpl implements GraphModel {
   @Override
   public void addEdge(int nodeId1, int nodeId2, GraphEdgeType edgeType) {
     checkAdditionEdgeType(edgeType);
-    myAdditionEdges.putValue(nodeId1, compactEdge(nodeId2, edgeType));
-    myAdditionEdges.putValue(nodeId2, compactEdge(nodeId1, edgeType));
+    myGraphAdditionEdges.createEdge(nodeId1, nodeId2, edgeType);
   }
 
   @Override
   public void removeEdge(int nodeId1, int nodeId2, GraphEdgeType edgeType) {
     checkAdditionEdgeType(edgeType);
-    myAdditionEdges.remove(nodeId1, compactEdge(nodeId2, edgeType));
-    myAdditionEdges.remove(nodeId2, compactEdge(nodeId1, edgeType));
+    myGraphAdditionEdges.removeEdge(nodeId1, nodeId2, edgeType);
   }
 
   private void update(int startDelegateId, int endDelegateId) {
@@ -151,7 +162,7 @@ public class GraphModelImpl implements GraphModel {
   }
 
   private static void checkAdditionEdgeType(GraphEdgeType edgeType) {
-    assert !edgeType.isPermanentEdge();
+    assert !edgeType.isEdge();
   }
   private static void checkPositiveId(int id) {
     assert id >= 0;
@@ -195,7 +206,7 @@ public class GraphModelImpl implements GraphModel {
         }
       }
 
-      addToResultAdditionEdges(result, nodeIndex, nodeId, false);
+      myGraphAdditionEdges.addToResultAdditionEdges(result, nodeIndex, false);
       return result;
     }
 
@@ -215,7 +226,7 @@ public class GraphModelImpl implements GraphModel {
         }
       }
 
-      addToResultAdditionEdges(result, nodeIndex, nodeId, true);
+      myGraphAdditionEdges.addToResultAdditionEdges(result, nodeIndex, true);
       return result;
     }
 
@@ -225,45 +236,11 @@ public class GraphModelImpl implements GraphModel {
       throw new UnsupportedOperationException(); // todo
     }
 
-    private void addToResultAdditionEdges(List<GraphEdge> result, int nodeIndex, int nodeId, boolean toDown) {
-      for (int compactEdge : myAdditionEdges.get(nodeId)) {
-        GraphEdge edge = createEdge(nodeIndex, compactEdge, toDown);
-        if (edge != null)
-          result.add(edge);
-      }
+    @Override
+    public int getNodeIndexById(int nodeId) {
+      throw new UnsupportedOperationException(); // todo
     }
 
-    @Nullable
-    private GraphEdge createEdge(int nodeIndex, int compactEdge, boolean toDown) {
-      GraphEdgeType edgeType = retrievedType(compactEdge);
-      int retrievedId = retrievedNodeIndex(compactEdge);
-      switch (edgeType) {
-        case DOTTED:
-          int anotherNodeIndex = getNodeIndex(retrievedId);
-          if (anotherNodeIndex == -1)
-            return null;
-          if (toDown && nodeIndex < anotherNodeIndex)
-            return new GraphEdge(nodeIndex, anotherNodeIndex, DOTTED);
-          if (!toDown && nodeIndex > anotherNodeIndex)
-            return new GraphEdge(anotherNodeIndex, nodeIndex, DOTTED);
-          return null;
-
-        case DOTTED_ARROW_DOWN:
-          if (toDown)
-            return new GraphEdge(nodeIndex, null, retrievedId, DOTTED_ARROW_DOWN);
-          else
-            return null;
-
-        case DOTTED_ARROW_UP:
-          if (!toDown)
-            return new GraphEdge(null, nodeIndex, retrievedId, DOTTED_ARROW_UP);
-          else
-            return null;
-
-        default:
-          return null;
-      }
-    }
 
   }
 }
