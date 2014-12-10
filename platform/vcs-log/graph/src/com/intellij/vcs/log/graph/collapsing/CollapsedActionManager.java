@@ -16,7 +16,9 @@
 package com.intellij.vcs.log.graph.collapsing;
 
 import com.intellij.util.containers.ContainerUtil;
-import com.intellij.vcs.log.graph.impl.facade.LinearGraphController.*;
+import com.intellij.vcs.log.graph.actions.GraphAction;
+import com.intellij.vcs.log.graph.impl.facade.LinearGraphController.LinearGraphAction;
+import com.intellij.vcs.log.graph.impl.facade.LinearGraphController.LinearGraphAnswer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -47,5 +49,16 @@ class CollapsedActionManager {
     return null;
   }
 
+  private final static ActionCase EXPAND_CASE = new ActionCase() {
+    @Nullable
+    @Override
+    public LinearGraphAnswer performAction(@NotNull FilterLinearGraphController graphController,
+                                           @NotNull LinearGraphAction action) {
+      if (action.getType() != GraphAction.Type.MOUSE_CLICK) {
+        return null;
+      }
 
+      return null;
+    }
+  };
 }
