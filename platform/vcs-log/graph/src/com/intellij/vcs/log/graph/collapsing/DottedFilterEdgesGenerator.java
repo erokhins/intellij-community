@@ -15,20 +15,18 @@
  */
 package com.intellij.vcs.log.graph.collapsing;
 
-import com.intellij.util.Function;
-import com.intellij.util.containers.ContainerUtil;
+import com.intellij.util.SmartList;
 import com.intellij.vcs.log.graph.api.LiteLinearGraph;
 import com.intellij.vcs.log.graph.api.LiteLinearGraph.NodeFilter;
+import com.intellij.vcs.log.graph.api.elements.GraphEdge;
 import com.intellij.vcs.log.graph.utils.LinearGraphUtils;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.List;
 
 import static com.intellij.vcs.log.graph.api.elements.GraphEdgeType.*;
 import static com.intellij.vcs.log.graph.collapsing.GraphAdditionalEdges.NULL_ID;
 
 public class DottedFilterEdgesGenerator {
-  public void update(@NotNull CollapsedGraph collapsedGraph, int upDelegateNodeIndex, int downDelegateNodeIndex) {
+  public static void update(@NotNull CollapsedGraph collapsedGraph, int upDelegateNodeIndex, int downDelegateNodeIndex) {
     new DottedFilterEdgesGenerator(collapsedGraph, upDelegateNodeIndex, downDelegateNodeIndex).update();
   }
 
@@ -38,14 +36,18 @@ public class DottedFilterEdgesGenerator {
 
   private final int myUpIndex;
   private final int myDownIndex;
-  @NotNull private final int[] myNumbers;
+  @NotNull private final ShiftNumber myNumbers;
 
   private DottedFilterEdgesGenerator(@NotNull CollapsedGraph collapsedGraph, int upIndex, int downIndex) {
     myCollapsedGraph = collapsedGraph;
     myLiteDelegateGraph = LinearGraphUtils.asLiteLinearGraph(collapsedGraph.getDelegateGraph());
     myUpIndex = upIndex;
     myDownIndex = downIndex;
-    myNumbers = new int[downIndex - upIndex + 1];
+    myNumbers = new ShiftNumber(upIndex, downIndex);
+  }
+
+  private boolean nodeIsVisible(int nodeIndex) {
+    return myCollapsedGraph.getNodeVisibility(getNodeId(nodeIndex));
   }
 
   private int getNodeId(int nodeIndex) {
@@ -62,76 +64,143 @@ public class DottedFilterEdgesGenerator {
 
   // update specified range
   private void update() {
-    computeEdges(new DataDispatcher(false));
-    computeEdges(new DataDispatcher(true));
+    downWalk();
+    upWalk();
   }
 
-  private void computeEdges(DataDispatcher dispatcher) {
-    for (int shiftIndex = 0; shiftIndex < myNumbers.length; shiftIndex++) {
-      if (dispatcher.nodeIsVisible(shiftIndex)) {
-        myNumbers[shiftIndex] = computeVisibleNodeNumber(shiftIndex, dispatcher);
+  private boolean hasDottedEdges(int nodeIndex, boolean toUp) {
+    SmartList<GraphEdge> additionalEdges = new SmartList<GraphEdge>();
+    myCollapsedGraph.getGraphAdditionalEdges().appendAdditionalEdges(additionalEdges, getNodeId(nodeIndex));
+    for (GraphEdge edge : additionalEdges) {
+      Integer anotherNodeIndex;
+      if (toUp) anotherNodeIndex = edge.getDownNodeIndex(); else anotherNodeIndex = edge.getUpNodeIndex();
+
+      if (anotherNodeIndex != null && nodeIndex == anotherNodeIndex) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  private void addEdgeOrArrow(int currentNodeIndex, int anotherNodeIndex, boolean toUp) {
+    if (hasDottedEdges(currentNodeIndex, toUp)) {
+      if (nodeIsVisible(anotherNodeIndex)) {
+        addDottedEdge(currentNodeIndex, anotherNodeIndex);
       }
       else {
-        myNumbers[shiftIndex] = computeInvisibleNodeNumber(shiftIndex, dispatcher);
+        addDottedArrow(currentNodeIndex, toUp);
       }
     }
   }
 
-  private int computeVisibleNodeNumber(int shiftIndex, DataDispatcher dispatcher) {
-    int nearlyVisibleNode = Integer.MIN_VALUE;
-    int maxAdjacentNumber = Integer.MIN_VALUE;
-    for (int prevShiftIndex : dispatcher.getPrevNodes(shiftIndex)) {
-      if (prevShiftIndex < 0) {
+  private void downWalk() {
+    for (int currentNodeIndex = myUpIndex; currentNodeIndex <= myDownIndex; currentNodeIndex++) {
+      if (nodeIsVisible(currentNodeIndex)) {
+        int nearlyUp = Integer.MIN_VALUE;
+        int maxAdjNumber = Integer.MIN_VALUE;
+        for (int upNode : myLiteDelegateGraph.getNodes(currentNodeIndex, NodeFilter.UP)) {
+          if (upNode < myUpIndex) {
+            addEdgeOrArrow(currentNodeIndex, upNode, true);
+            continue;
+          }
 
-      }
-      if (dispatcher.nodeIsVisible(prevShiftIndex)) {
-        maxAdjacentNumber = Math.max(maxAdjacentNumber, myNumbers[prevShiftIndex]);
-      } else {
-        nearlyVisibleNode = Math.max(nearlyVisibleNode, myNumbers[prevShiftIndex]);
-      }
-    }
-
-    if (nearlyVisibleNode != maxAdjacentNumber && nearlyVisibleNode == Integer.MIN_VALUE) {
-      addDottedEdge(dispatcher.getNodeIndex(shiftIndex), dispatcher.getNodeIndex(nearlyVisibleNode));
-    }
-
-    return nearlyVisibleNode;
-  }
-
-  private int computeInvisibleNodeNumber(int nodeIndex, DataDispatcher dispatcher) {
-    //todo
-    return 0;
-  }
-
-  class DataDispatcher {
-    private final boolean myToUp;
-
-    DataDispatcher(boolean toUp) {
-      this.myToUp = toUp;
-    }
-
-    private int getShiftIndex(int nodeIndex) {
-      return myToUp ? myDownIndex - nodeIndex : nodeIndex - myUpIndex;
-    }
-
-    private int getNodeIndex(int shiftIndex) {
-      return myToUp ? myDownIndex - shiftIndex : myUpIndex + shiftIndex;
-    }
-
-    private List<Integer> getPrevNodes(int shiftIndex) {
-      return ContainerUtil.map(myLiteDelegateGraph.getNodes(getNodeIndex(shiftIndex), NodeFilter.filter(!myToUp)), new Function<Integer, Integer>() {
-        @Override
-        public Integer fun(Integer nodeIndex) {
-          return getShiftIndex(nodeIndex);
+          if (nodeIsVisible(upNode))
+            maxAdjNumber = Math.max(maxAdjNumber, myNumbers.getNumber(upNode));
+          else
+            nearlyUp = Math.max(nearlyUp, myNumbers.getNumber(upNode));
         }
-      });
+
+        if (nearlyUp == maxAdjNumber || nearlyUp == Integer.MIN_VALUE) {
+          myNumbers.setNumber(currentNodeIndex, maxAdjNumber);
+        } else {
+          addDottedEdge(currentNodeIndex, nearlyUp);
+          myNumbers.setNumber(currentNodeIndex, nearlyUp);
+        }
+      } else {
+        // node currentNodeIndex invisible
+
+        int nearlyUp = Integer.MIN_VALUE;
+        for (int upNode : myLiteDelegateGraph.getNodes(currentNodeIndex, NodeFilter.UP)) {
+          if (nodeIsVisible(upNode)) {
+            nearlyUp = Math.max(nearlyUp, upNode);
+          }
+          else {
+            if (upNode >= myUpIndex) nearlyUp = Math.max(nearlyUp, myNumbers.getNumber(upNode));
+          }
+        }
+        myNumbers.setNumber(currentNodeIndex, nearlyUp);
+      }
+    }
+  }
+
+  private void upWalk() {
+    for (int currentNodeIndex = myDownIndex; currentNodeIndex >= myUpIndex; currentNodeIndex--) {
+      if (nodeIsVisible(currentNodeIndex)) {
+        int nearlyDown = Integer.MAX_VALUE;
+        int minAdjNumber = Integer.MAX_VALUE;
+        for (int downNode : myLiteDelegateGraph.getNodes(currentNodeIndex, NodeFilter.DOWN)) {
+          if (downNode > myDownIndex) {
+            addEdgeOrArrow(currentNodeIndex, downNode, false);
+            continue;
+          }
+
+          if (nodeIsVisible(downNode))
+            minAdjNumber = Math.min(minAdjNumber, myNumbers.getNumber(downNode));
+          else
+            nearlyDown = Math.min(nearlyDown, myNumbers.getNumber(downNode));
+        }
+
+        if (nearlyDown == minAdjNumber || nearlyDown == Integer.MAX_VALUE) {
+          myNumbers.setNumber(currentNodeIndex, minAdjNumber);
+        } else {
+          addDottedEdge(currentNodeIndex, nearlyDown);
+          myNumbers.setNumber(currentNodeIndex, nearlyDown);
+        }
+      } else {
+        // node currentNodeIndex invisible
+
+        int nearlyDown = Integer.MAX_VALUE;
+        for (int downNode : myLiteDelegateGraph.getNodes(currentNodeIndex, NodeFilter.DOWN)) {
+          if (nodeIsVisible(downNode)) {
+            nearlyDown = Math.min(nearlyDown, downNode);
+          }
+          else {
+            if (downNode > myDownIndex) nearlyDown = Math.min(nearlyDown, myNumbers.getNumber(downNode));
+          }
+        }
+        myNumbers.setNumber(currentNodeIndex, nearlyDown);
+      }
+    }
+  }
+
+
+
+  static class ShiftNumber {
+    private final int startIndex;
+    private final int endIndex;
+    private final int[] numbers;
+
+    ShiftNumber(int startIndex, int endIndex) {
+      this.startIndex = startIndex;
+      this.endIndex = endIndex;
+      numbers = new int[endIndex - startIndex + 1];
     }
 
-    private boolean nodeIsVisible(int shiftNodeIndex) {
-      int nodeIndex = getNodeIndex(shiftNodeIndex);
-      return myCollapsedGraph.getNodeVisibility(getNodeId(nodeIndex));
+    private boolean inRange(int nodeIndex) {
+      return startIndex <= nodeIndex && nodeIndex <= endIndex;
     }
 
+    protected int getNumber(int nodeIndex) {
+      if (inRange(nodeIndex)) return numbers[nodeIndex - startIndex];
+
+      return -1;
+    }
+
+    protected void setNumber(int nodeIndex, int value) {
+      if (inRange(nodeIndex)) {
+        numbers[nodeIndex - startIndex] = value;
+      }
+    }
   }
 
 }
