@@ -26,6 +26,13 @@ import com.intellij.util.containers.HashMap
 import com.intellij.vcs.log.graph.api.elements.GraphNodeType
 import com.intellij.vcs.log.graph.BaseTestGraphBuilder.SimpleEdge
 import com.intellij.vcs.log.graph.BaseTestGraphBuilder.SimpleNode
+import com.intellij.vcs.log.graph.api.permanent.PermanentGraphInfo
+import com.intellij.vcs.log.graph.api.permanent.PermanentCommitsInfo
+import com.intellij.vcs.log.graph.api.GraphLayout
+import com.intellij.openapi.util.Condition
+import com.intellij.util.containers.ContainerUtil
+import com.intellij.vcs.log.graph.utils.TimestampGetter
+import com.intellij.vcs.log.graph.impl.permanent.GraphLayoutBuilder
 
 trait BaseTestGraphBuilder {
   val Int.U: SimpleNode get() = SimpleNode(this, GraphNodeType.USUAL)
@@ -136,4 +143,46 @@ private fun <T, R> Iterable<T>.map2(transform: (Int, T) -> R): List<R> {
     index++
   }
   return result
+}
+
+class TestPermanentGraphInfo(
+    val graph: LinearGraph,
+    vararg val headsOrder: Int = IntArray(0),
+    val branchNodes: Set<Int> = emptySet()
+) : PermanentGraphInfo<Int> {
+
+  val commitInfo = object : PermanentCommitsInfo<Int> {
+    override fun getCommitId(nodeId: Int) = nodeId
+    override fun getTimestamp(nodeId: Int) = nodeId.toLong()
+    override fun getNodeId(commitId: Int) = commitId
+    override fun convertToNodeIds(heads: MutableCollection<Int>) = ContainerUtil.newHashSet(heads)
+  }
+
+  val timestampGetter = object : TimestampGetter {
+    override fun size() = graph.nodesCount()
+    override fun getTimestamp(index: Int) = commitInfo.getTimestamp(graph.getGraphNode(index).getNodeId())
+  }
+
+  val graphLayout = GraphLayoutBuilder.build(graph) { (x, y) ->
+    if (headsOrder.isEmpty()) {
+      graph.getGraphNode(x).getNodeId() - graph.getGraphNode(y).getNodeId()
+    }
+    else {
+      val t = if (headsOrder.indexOf(x) == -1) x else if(headsOrder.indexOf(y) == -1) y else -1
+      if (t != -1) throw IllegalStateException("Not found headsOrder for $t node by id")
+      headsOrder.indexOf(x) - headsOrder.indexOf(y)
+    }
+  }
+
+  override fun getPermanentCommitsInfo() = commitInfo
+  override fun getPermanentLinearGraph() = graph
+  override fun getPermanentGraphLayout() = graphLayout
+
+  override fun getNotCollapsedNodes() = object : Condition<Int> {
+    override fun value(nodeId: Int) = branchNodes.contains(nodeId)
+  }
+
+  // todo fix it, if you needed of
+  override fun getGraphColorManager() = throw UnsupportedOperationException()
+
 }
