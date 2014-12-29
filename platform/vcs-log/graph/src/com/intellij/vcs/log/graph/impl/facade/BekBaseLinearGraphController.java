@@ -38,10 +38,14 @@ public class BekBaseLinearGraphController extends CascadeLinearGraphController {
   @NotNull
   private final LinearGraph myBekGraph;
 
-  public BekBaseLinearGraphController(@NotNull PermanentGraphInfo permanentGraphInfo, @NotNull BekIntMap bekIntMap) {
+  public BekBaseLinearGraphController(
+    @NotNull PermanentGraphInfo permanentGraphInfo,
+    @NotNull LinearGraph delegateGraph,
+    @NotNull BekIntMap bekIntMap
+  ) {
     super(null, permanentGraphInfo);
     myBekIntMap = bekIntMap;
-    myBekGraph = new BekLinearGraph();
+    myBekGraph = new BekLinearGraph(delegateGraph);
 
     assert BekChecker.checkLinearGraph(myBekGraph); // todo drop later
   }
@@ -71,15 +75,15 @@ public class BekBaseLinearGraphController extends CascadeLinearGraphController {
 
   private class BekLinearGraph implements LinearGraph {
     @NotNull
-    private final LinearGraph myPermanentGraph;
+    private final LinearGraph myDelegateGraph;
 
-    private BekLinearGraph() {
-      myPermanentGraph = myPermanentGraphInfo.getPermanentLinearGraph();
+    private BekLinearGraph(@NotNull LinearGraph delegateGraph) {
+      myDelegateGraph = delegateGraph;
     }
 
     @Override
     public int nodesCount() {
-      return myPermanentGraph.nodesCount();
+      return myDelegateGraph.nodesCount();
     }
 
     @NotNull
@@ -104,10 +108,11 @@ public class BekBaseLinearGraphController extends CascadeLinearGraphController {
     @NotNull
     @Override
     public List<GraphEdge> getAdjacentEdges(int nodeIndex) {
-      return map(myPermanentGraph.getAdjacentEdges(myBekIntMap.getUsualIndex(nodeIndex)), new Function<GraphEdge, GraphEdge>() {
+      return map(myDelegateGraph.getAdjacentEdges(myBekIntMap.getUsualIndex(nodeIndex)), new Function<GraphEdge, GraphEdge>() {
         @Override
         public GraphEdge fun(GraphEdge edge) {
-          return new GraphEdge(getNodeIndex(edge.getUpNodeIndex()), getNodeIndex(edge.getDownNodeIndex()), edge.getAdditionInfo(), edge.getType());
+          return new GraphEdge(getNodeIndex(edge.getUpNodeIndex()), getNodeIndex(edge.getDownNodeIndex()), edge.getAdditionInfo(),
+                               edge.getType());
         }
       });
     }
@@ -118,7 +123,8 @@ public class BekBaseLinearGraphController extends CascadeLinearGraphController {
       assert inRanges(nodeIndex);
 
       // see com.intellij.vcs.log.graph.impl.permanent.PermanentLinearGraphImpl.getGraphNode
-      return new GraphNode(myBekIntMap.getUsualIndex(nodeIndex), nodeIndex, GraphNodeType.USUAL);
+      int usualIndex = myBekIntMap.getUsualIndex(nodeIndex);
+      return new GraphNode(myDelegateGraph.getGraphNode(usualIndex).getNodeId(), nodeIndex, GraphNodeType.USUAL);
     }
 
     @Nullable
