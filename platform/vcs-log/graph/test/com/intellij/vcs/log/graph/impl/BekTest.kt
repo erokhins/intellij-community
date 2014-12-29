@@ -24,6 +24,7 @@ import com.intellij.vcs.log.graph.impl.facade.BekBaseLinearGraphController
 import com.intellij.vcs.log.graph.asString
 import org.junit.Assert.*
 import org.junit.Test
+import com.intellij.vcs.log.graph.asTestGraphString
 
 class BekTest {
 
@@ -34,9 +35,8 @@ class BekTest {
     val bekIntMap = BekSorter.createBekMap(this, graphInfo.graphLayout, graphInfo.timestampGetter)
     val actualResult = BekBaseLinearGraphController(graphInfo, this, bekIntMap).getCompiledGraph()
 
-    assertEquals(result.asString(), actualResult.asString())
+    assertEquals(result.asTestGraphString(), actualResult.asTestGraphString())
   }
-
 
   Test fun simple() = graph {
     1(3, 2)

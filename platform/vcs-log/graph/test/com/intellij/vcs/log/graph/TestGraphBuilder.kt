@@ -33,6 +33,10 @@ import com.intellij.openapi.util.Condition
 import com.intellij.util.containers.ContainerUtil
 import com.intellij.vcs.log.graph.utils.TimestampGetter
 import com.intellij.vcs.log.graph.impl.permanent.GraphLayoutBuilder
+import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
+import kotlin.test.assertTrue
+import kotlin.test.assertNull
 
 trait BaseTestGraphBuilder {
   val Int.U: SimpleNode get() = SimpleNode(this, GraphNodeType.USUAL)
@@ -128,6 +132,73 @@ class TestGraphBuilder: BaseTestGraphBuilder {
 
   }
 }
+
+private fun LinearGraph.assertEdge(nodeIndex: Int, edge: GraphEdge) {
+  if (edge.getType().isNormalEdge()) {
+    if (nodeIndex == edge.getUpNodeIndex()) {
+      assertTrue(getAdjacentEdges(edge.getDownNodeIndex()).contains(edge))
+    }
+    else {
+      assertTrue(nodeIndex == edge.getDownNodeIndex())
+      assertTrue(getAdjacentEdges(edge.getUpNodeIndex()).contains(edge))
+    }
+  } else {
+    when (edge.getType()) {
+      GraphEdgeType.NOT_LOAD_COMMIT, GraphEdgeType.DOTTED_ARROW_DOWN -> {
+        assertTrue(nodeIndex == edge.getUpNodeIndex())
+        assertNull(edge.getDownNodeIndex())
+      }
+      GraphEdgeType.DOTTED_ARROW_UP -> {
+        assertTrue(nodeIndex == edge.getDownNodeIndex())
+        assertNull(edge.getUpNodeIndex())
+      }
+    }
+  }
+}
+
+fun LinearGraph.asTestGraphString(): String = StringBuilder {
+  for(nodeIndex in 0..nodesCount() - 1) {
+    val node = getGraphNode(nodeIndex)
+    append(node.getNodeId())
+    assertEquals(nodeIndex, node.getNodeIndex(),
+      "nodeIndex: $nodeIndex, but for node with this index(nodeId: ${node.getNodeId()}) nodeIndex: ${node.getNodeIndex()}"
+    )
+    when (node.getType()) {
+      GraphNodeType.GRAY -> append(".G")
+      GraphNodeType.NOT_LOAD_COMMIT -> append(".NOT_LOAD")
+    }
+
+    // edges
+    append("(")
+    getAdjacentEdges(nodeIndex).map {
+      assertEdge(nodeIndex, it)
+      if (it.getUpNodeIndex() == nodeIndex) {
+        val startId = if (it.getType().isNormalEdge()) {
+          getGraphNode(it.getDownNodeIndex()).getNodeId().toString()
+        }
+        else if (it.getAdditionInfo() != null) {
+          it.getAdditionInfo().toString()
+        }
+        else {
+          "null"
+        }
+
+        when (it.getType()!!) {
+          GraphEdgeType.USUAL -> startId
+          GraphEdgeType.DOTTED -> "$startId.dot"
+          GraphEdgeType.DOTTED_ARROW_UP -> "$startId.up_dot"
+          GraphEdgeType.DOTTED_ARROW_DOWN -> "$startId.down_dot"
+          GraphEdgeType.NOT_LOAD_COMMIT -> "$startId.not_load"
+        }
+      } else {
+        null
+      }
+    }.mapNotNull { it }.joinTo(this, separator = ", ")
+
+    append(")")
+    append("\n")
+  }
+}.toString()
 
 fun graph(f: TestGraphBuilder.() -> Unit): LinearGraph {
   val builder = TestGraphBuilder()
