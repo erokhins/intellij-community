@@ -38,6 +38,8 @@ class BekTest {
     assertEquals(result.asTestGraphString(), actualResult.asTestGraphString())
   }
 
+  val Int.big: Int get() = this * 100000000
+
   Test fun simple() = graph {
     1(3, 2)
     2(4)
@@ -50,6 +52,35 @@ class BekTest {
     4(5)
     3(5)
     5()
+  }
+
+  Test fun simple2() = graph {
+    4.big(9.big)
+    1.big(3.big, 5.big)
+    3.big(9.big)
+    5.big(7.big)
+    7.big(9.big)
+    9.big()
+  }.assert {
+    1.big(3.big, 5.big)
+    5.big(7.big)
+    7.big(9.big)
+    3.big(9.big)
+    4.big(9.big)
+    9.big()
+  }
+
+  Test fun s22() = graph {
+    0(2)
+    1(4, 2)
+    4(10.big)
+    2(3)
+    10.big(11.big)
+    3(6)
+    11.big(6)
+    6()
+  }.assert(0, 1) {
+
   }
 
 }
