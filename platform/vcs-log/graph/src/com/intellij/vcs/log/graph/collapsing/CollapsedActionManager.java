@@ -25,23 +25,22 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 class CollapsedActionManager {
-  private final static List<ActionCase> ACTION_CASES = ContainerUtil.emptyList();
 
   private CollapsedActionManager() {}
 
   private interface ActionCase {
     @Nullable LinearGraphAnswer performAction(
-      @NotNull FilterLinearGraphController graphController,
+      @NotNull CollapsedLinearGraphController graphController,
       @NotNull LinearGraphAction action
     );
   }
 
   @Nullable
   public static LinearGraphAnswer performAction(
-    @NotNull FilterLinearGraphController graphController,
+    @NotNull CollapsedLinearGraphController graphController,
     @NotNull LinearGraphAction action
   ) {
-    for (ActionCase actionCase : ACTION_CASES) {
+    for (ActionCase actionCase : FILTER_ACTION_CASES) {
       LinearGraphAnswer graphAnswer = actionCase.performAction(graphController, action);
       if (graphAnswer != null)
         return graphAnswer;
@@ -49,16 +48,29 @@ class CollapsedActionManager {
     return null;
   }
 
-  private final static ActionCase EXPAND_CASE = new ActionCase() {
+  private final static ActionCase LINEAR_COLLAPSE_CASE = new ActionCase() {
     @Nullable
     @Override
-    public LinearGraphAnswer performAction(@NotNull FilterLinearGraphController graphController,
-                                           @NotNull LinearGraphAction action) {
-      if (action.getType() != GraphAction.Type.MOUSE_CLICK) {
-        return null;
-      }
+    public LinearGraphAnswer performAction(@NotNull CollapsedLinearGraphController graphController, @NotNull LinearGraphAction action) {
+      if (action.getType() != GraphAction.Type.MOUSE_CLICK) return null;
+
+
 
       return null;
     }
   };
+
+  private final static ActionCase LINEAR_EXPAND_CASE = new ActionCase() {
+    @Nullable
+    @Override
+    public LinearGraphAnswer performAction(@NotNull CollapsedLinearGraphController graphController,
+                                           @NotNull LinearGraphAction action) {
+      if (action.getType() != GraphAction.Type.MOUSE_CLICK) return null;
+
+      return null;
+    }
+  };
+
+  private final static List<ActionCase> FILTER_ACTION_CASES = ContainerUtil.list(LINEAR_COLLAPSE_CASE, LINEAR_EXPAND_CASE);
+
 }
