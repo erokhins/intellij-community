@@ -15,18 +15,22 @@
  */
 package com.intellij.vcs.log.graph.collapsing;
 
+import com.intellij.util.containers.ContainerUtil;
 import com.intellij.vcs.log.graph.api.LinearGraph;
 import com.intellij.vcs.log.graph.api.permanent.PermanentGraphInfo;
 import com.intellij.vcs.log.graph.api.printer.PrintElementWithGraphElement;
 import com.intellij.vcs.log.graph.impl.facade.CascadeLinearGraphController;
 import com.intellij.vcs.log.graph.impl.facade.GraphChanges;
-import com.intellij.vcs.log.graph.utils.UnsignedBitSet;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Set;
 
 public class CollapsedLinearGraphController extends CascadeLinearGraphController {
   @NotNull
   private CollapsedGraph myCollapsedGraph;
+  @NotNull
+  private Set<PrintElementWithGraphElement> mySelectedElements = ContainerUtil.newHashSet();
 
   protected CollapsedLinearGraphController(@NotNull CascadeLinearGraphController delegateLinearGraphController,
                                            @NotNull PermanentGraphInfo permanentGraphInfo) {
@@ -63,7 +67,7 @@ public class CollapsedLinearGraphController extends CascadeLinearGraphController
 
   @Override
   protected boolean elementIsSelected(@NotNull PrintElementWithGraphElement printElement) {
-    return false;
+    return mySelectedElements.contains(printElement);
   }
 
   @NotNull
@@ -71,4 +75,8 @@ public class CollapsedLinearGraphController extends CascadeLinearGraphController
     return myCollapsedGraph;
   }
 
+  @NotNull
+  protected Set<PrintElementWithGraphElement> getSelectedElements() {
+    return mySelectedElements;
+  }
 }

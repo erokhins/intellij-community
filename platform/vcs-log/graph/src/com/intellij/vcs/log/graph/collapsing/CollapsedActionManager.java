@@ -17,6 +17,13 @@ package com.intellij.vcs.log.graph.collapsing;
 
 import com.intellij.util.containers.ContainerUtil;
 import com.intellij.vcs.log.graph.actions.GraphAction;
+import com.intellij.vcs.log.graph.api.LinearGraph;
+import com.intellij.vcs.log.graph.api.elements.GraphEdge;
+import com.intellij.vcs.log.graph.api.elements.GraphEdgeType;
+import com.intellij.vcs.log.graph.api.elements.GraphElement;
+import com.intellij.vcs.log.graph.api.elements.GraphNode;
+import com.intellij.vcs.log.graph.api.printer.PrintElementWithGraphElement;
+import com.intellij.vcs.log.graph.impl.facade.LinearGraphController;
 import com.intellij.vcs.log.graph.impl.facade.LinearGraphController.LinearGraphAction;
 import com.intellij.vcs.log.graph.impl.facade.LinearGraphController.LinearGraphAnswer;
 import org.jetbrains.annotations.NotNull;
@@ -47,6 +54,35 @@ class CollapsedActionManager {
     }
     return null;
   }
+
+  @Nullable
+  private static GraphEdge getDottedEdge(@Nullable PrintElementWithGraphElement element, @NotNull LinearGraph graph) {
+    if (element == null) return null;
+    GraphElement graphElement = element.getGraphElement();
+
+    if (graphElement instanceof GraphEdge && ((GraphEdge)graphElement).getType() == GraphEdgeType.DOTTED) return (GraphEdge)graphElement;
+    if (graphElement instanceof GraphNode) {
+      GraphNode node = (GraphNode)graphElement;
+      for (GraphEdge edge : graph.getAdjacentEdges(node.getNodeIndex())) {
+        if (edge.getType() == GraphEdgeType.DOTTED) {
+          return edge;
+        }
+      }
+    }
+
+    return null;
+  }
+
+  private final static ActionCase HOVER_CASE = new ActionCase() {
+    @Nullable
+    @Override
+    public LinearGraphAnswer performAction(@NotNull CollapsedLinearGraphController graphController, @NotNull LinearGraphAction action) {
+      if (action.getType() != GraphAction.Type.MOUSE_OVER) return null;
+
+      GraphEdge dottedEdge = getDottedEdge(action.getAffectedElement(), graphController.getCompiledGraph());
+      return null;
+    }
+  };
 
   private final static ActionCase LINEAR_COLLAPSE_CASE = new ActionCase() {
     @Nullable
