@@ -102,7 +102,7 @@ public class VisibleGraphImpl<CommitId> implements VisibleGraph<CommitId> {
     return new ActionControllerImpl();
   }
 
-  private void graphWasChanged() {
+  private void graphWasChanged() { // todo rename update PrintElementGenerator
     myPrintElementGenerator = new PrintElementGeneratorImpl(myGraphController.getCompiledGraph(),
                                                             myGraphController.getPrintElementManager(),
                                                             myShowLongEdges);

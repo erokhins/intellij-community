@@ -43,12 +43,12 @@ public interface LinearGraph {
   List<Integer> getDownNodes(int nodeIndex);
 
   @NotNull
-  List<GraphEdge> getAdjacentEdges(int nodeIndex);
+  List<GraphEdge> getAdjacentEdges(int nodeIndex); // todo filter
 
   @NotNull
   GraphNode getGraphNode(int nodeIndex);
 
   // return null, if node doesn't exist
   @Nullable
-  Integer getNodeIndexById(int nodeId);
+  Integer getNodeIndexById(int nodeId); // todo index to Id
 }

@@ -25,8 +25,10 @@ public interface ActionController<CommitId> {
   @NotNull
   GraphAnswer<CommitId> performAction(@NotNull GraphAction graphAction);
 
-  boolean areLongEdgesHidden();
+  // todo ctrl+z
 
+  // move to VisibleGraph
+  boolean areLongEdgesHidden();
   void setLongEdgesHidden(boolean longEdgesHidden);
 
   @Deprecated

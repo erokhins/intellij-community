@@ -17,7 +17,7 @@ package com.intellij.vcs.log.graph;
 
 import com.intellij.vcs.log.VcsLogRefManager;
 
-public interface GraphColorManager<CommitId> {
+public interface GraphColorManager<CommitId> { // todo
 
   /**
    * Returns the color which should be used to draw the given branch.
@@ -54,6 +54,6 @@ public interface GraphColorManager<CommitId> {
    *
    * @see VcsLogRefManager#getBranchLayoutComparator()
    */
-  int compareHeads(CommitId head1, CommitId head2);
+  int compareHeads(CommitId head1, CommitId head2); // todo
 
 }

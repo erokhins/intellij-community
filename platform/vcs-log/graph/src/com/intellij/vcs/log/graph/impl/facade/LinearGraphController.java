@@ -29,7 +29,7 @@ public interface LinearGraphController {
   LinearGraph getCompiledGraph();
 
   @NotNull
-  PrintElementsManager getPrintElementManager();
+  PrintElementsManager getPrintElementManager(); // todo move replace elementIsSelected or getElementState
 
   // Integer = nodeId
   @NotNull

@@ -73,7 +73,7 @@ public final class GraphEdge implements GraphElement {
   }
 
   @Nullable
-  public Integer getAdditionInfo() {
+  public Integer getAdditionInfo() { // todo rename target
     return myAdditionInfo;
   }
 

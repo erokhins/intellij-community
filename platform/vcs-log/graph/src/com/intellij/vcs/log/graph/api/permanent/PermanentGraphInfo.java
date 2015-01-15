@@ -34,8 +34,8 @@ public interface PermanentGraphInfo<CommitId> {
   GraphLayout getPermanentGraphLayout();
   // by nodeId
   @NotNull
-  Condition<Integer> getNotCollapsedNodes();
+  Condition<Integer> getNotCollapsedNodes(); // todo Set of branch
 
   @NotNull
-  GraphColorManager<CommitId> getGraphColorManager();
+  GraphColorManager<CommitId> getGraphColorManager(); // todo
 }

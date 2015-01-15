@@ -34,7 +34,7 @@ public interface PermanentGraph<CommitId> {
   @NotNull
   VisibleGraph<CommitId> createVisibleGraph(@NotNull SortType sortType,
                                             @Nullable Set<CommitId> headsOfVisibleBranches,
-                                            @Nullable Condition<CommitId> filter);
+                                            @Nullable Condition<CommitId> filter); // todo Set
 
   @NotNull
   List<GraphCommit<CommitId>> getAllCommits();

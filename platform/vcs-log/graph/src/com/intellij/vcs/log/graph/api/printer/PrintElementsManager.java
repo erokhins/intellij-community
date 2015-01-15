@@ -25,7 +25,7 @@ import java.util.Comparator;
 
 public interface PrintElementsManager {
 
-  boolean elementIsSelected(@NotNull PrintElementWithGraphElement printElement);
+  boolean elementIsSelected(@NotNull PrintElementWithGraphElement printElement); // todo lineStyle
 
   @Deprecated
   @Nullable

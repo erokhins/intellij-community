@@ -22,7 +22,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * @author erokhins
  */
-public interface PrintElementWithGraphElement extends PrintElement {
+public interface PrintElementWithGraphElement extends PrintElement { // todo cast to Impl
   @NotNull
   GraphElement getGraphElement();
 }
