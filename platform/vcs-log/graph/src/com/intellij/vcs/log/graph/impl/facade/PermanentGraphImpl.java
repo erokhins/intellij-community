@@ -27,6 +27,7 @@ import com.intellij.vcs.log.graph.collapsing.CollapsedLinearGraphController;
 import com.intellij.vcs.log.graph.impl.facade.bek.BekIntMap;
 import com.intellij.vcs.log.graph.impl.facade.bek.BekSorter;
 import com.intellij.vcs.log.graph.impl.permanent.*;
+import com.intellij.vcs.log.graph.linearBek.LinearBekController;
 import com.intellij.vcs.log.graph.utils.LinearGraphUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -109,6 +110,8 @@ public class PermanentGraphImpl<CommitId> implements PermanentGraph<CommitId>, P
     CascadeLinearGraphController controller;
     if (sortType == SortType.Bek) {
       controller = new CollapsedLinearGraphController(new BekBaseLinearGraphController(this, myBekIntMap), this);
+    } else if (sortType == SortType.LinearBek) {
+      controller = new LinearBekController(new BekBaseLinearGraphController(this, myBekIntMap), this, myPermanentCommitsInfo.getTimestampGetter());
     }
     else {
       controller = new CollapsedLinearGraphController(new BaseLinearGraphController(this), this);
