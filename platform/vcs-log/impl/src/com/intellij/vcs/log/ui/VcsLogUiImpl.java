@@ -154,22 +154,12 @@ public class VcsLogUiImpl implements VcsLogUi, Disposable {
   }
 
   public void showAll() {
-    runUnderModalProgress("Expanding linear branches...", new Runnable() {
-      @Override
-      public void run() {
-        myVisiblePack.getVisibleGraph().getActionController().setLinearBranchesExpansion(false);
-      }
-    });
+    myVisiblePack.getVisibleGraph().getActionController().setLinearBranchesExpansion(false);
     handleAnswer(null, true);
   }
 
   public void hideAll() {
-    runUnderModalProgress("Collapsing linear branches...", new Runnable() {
-      @Override
-      public void run() {
-        myVisiblePack.getVisibleGraph().getActionController().setLinearBranchesExpansion(true);
-      }
-    });
+    myVisiblePack.getVisibleGraph().getActionController().setLinearBranchesExpansion(true);
     handleAnswer(null, true);
   }
 
