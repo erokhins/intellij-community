@@ -15,15 +15,15 @@
  */
 package com.intellij.vcs.log.graph.impl.facade;
 
-import com.intellij.vcs.log.graph.PrintElement;
-import com.intellij.vcs.log.graph.RowInfo;
-import com.intellij.vcs.log.graph.RowType;
-import com.intellij.vcs.log.graph.VisibleGraph;
+import com.intellij.vcs.log.graph.*;
 import com.intellij.vcs.log.graph.actions.ActionController;
 import com.intellij.vcs.log.graph.actions.GraphAction;
 import com.intellij.vcs.log.graph.actions.GraphAnswer;
+import com.intellij.vcs.log.graph.api.elements.GraphEdge;
+import com.intellij.vcs.log.graph.api.elements.GraphElement;
 import com.intellij.vcs.log.graph.api.permanent.PermanentGraphInfo;
 import com.intellij.vcs.log.graph.api.printer.PrintElementGenerator;
+import com.intellij.vcs.log.graph.impl.facade.LinearGraphController.LinearGraphAction;
 import com.intellij.vcs.log.graph.impl.print.PrintElementGeneratorImpl;
 import com.intellij.vcs.log.graph.impl.print.elements.PrintElementWithGraphElement;
 import org.jetbrains.annotations.NotNull;
@@ -31,6 +31,11 @@ import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
 import java.util.Collection;
+import java.util.Collections;
+
+import static com.intellij.vcs.log.graph.SimplePrintElement.Type.DOWN_ARROW;
+import static com.intellij.vcs.log.graph.SimplePrintElement.Type.UP_ARROW;
+import static com.intellij.vcs.log.graph.utils.LinearGraphUtils.getCursor;
 
 public class VisibleGraphImpl<CommitId> implements VisibleGraph<CommitId> {
   @NotNull private final LinearGraphController myGraphController;
@@ -104,10 +109,50 @@ public class VisibleGraphImpl<CommitId> implements VisibleGraph<CommitId> {
 
   private class ActionControllerImpl implements ActionController<CommitId> {
 
+    @Nullable
+    private CommitId convertToCommitId(@Nullable Integer nodeIndex) {
+      if (nodeIndex == null) return null;
+      int nodeId = myGraphController.getCompiledGraph().getNodeId(nodeIndex);
+      return myPermanentGraph.getPermanentCommitsInfo().getCommitId(nodeId);
+    }
+
+    @Nullable
+    private GraphAnswer<CommitId> performArrowAction(@NotNull LinearGraphAction action) {
+      PrintElementWithGraphElement affectedElement = action.getAffectedElement();
+      if (!(affectedElement instanceof SimplePrintElement)) return null;
+      SimplePrintElement.Type printElementType = ((SimplePrintElement)affectedElement).getType();
+      if (printElementType != DOWN_ARROW && printElementType != UP_ARROW) return null;
+
+      GraphElement graphElement = affectedElement.getGraphElement();
+      if (!(graphElement instanceof GraphEdge) || !((GraphEdge)graphElement).getType().isNormalEdge()) return null;
+
+      if (action.getType() == GraphAction.Type.MOUSE_OVER) {
+        myPrintElementManager.setSelectedElement(affectedElement);
+        return new GraphAnswerImpl<CommitId>(getCursor(true), null);
+      }
+
+      if (action.getType() == GraphAction.Type.MOUSE_CLICK) {
+        GraphEdge edge = (GraphEdge)graphElement;
+        if (printElementType == DOWN_ARROW) {
+          return new GraphAnswerImpl<CommitId>(getCursor(false), convertToCommitId(edge.getDownNodeIndex()));
+        } else {
+          return new GraphAnswerImpl<CommitId>(getCursor(false), convertToCommitId(edge.getUpNodeIndex()));
+        }
+      }
+
+      return null;
+    }
+
     @NotNull
     @Override
     public GraphAnswer<CommitId> performAction(@NotNull GraphAction graphAction) {
-      LinearGraphController.LinearGraphAnswer answer = myGraphController.performLinearGraphAction(convert(graphAction));
+      myPrintElementManager.setSelectedElements(Collections.<Integer>emptySet());
+
+      LinearGraphAction action = convert(graphAction);
+      GraphAnswer<CommitId> graphAnswer = performArrowAction(action);
+      if (graphAnswer != null) return graphAnswer;
+
+      LinearGraphController.LinearGraphAnswer answer = myGraphController.performLinearGraphAction(action);
       if (answer.getSelectedNodeIds() != null) myPrintElementManager.setSelectedElements(answer.getSelectedNodeIds());
 
       if (answer.getGraphChanges() != null) updatePrintElementGenerator();
@@ -137,7 +182,7 @@ public class VisibleGraphImpl<CommitId> implements VisibleGraph<CommitId> {
       if (answer.getGraphChanges() != null) updatePrintElementGenerator();
     }
 
-    private LinearGraphController.LinearGraphAction convert(@NotNull GraphAction graphAction) {
+    private LinearGraphAction convert(@NotNull GraphAction graphAction) {
       PrintElementWithGraphElement printElement = null;
       if (graphAction.getAffectedElement() != null) {
         printElement = myPrintElementGenerator.toPrintElementWithGraphElement(graphAction.getAffectedElement());
@@ -175,9 +220,9 @@ public class VisibleGraphImpl<CommitId> implements VisibleGraph<CommitId> {
     }
   }
 
-  private static class LinearGraphActionImpl implements LinearGraphController.LinearGraphAction {
-    private final static LinearGraphController.LinearGraphAction COLLAPSE = new LinearGraphActionImpl(null, Type.BUTTON_COLLAPSE);
-    private final static LinearGraphController.LinearGraphAction EXPAND = new LinearGraphActionImpl(null, Type.BUTTON_EXPAND);
+  private static class LinearGraphActionImpl implements LinearGraphAction {
+    private final static LinearGraphAction COLLAPSE = new LinearGraphActionImpl(null, Type.BUTTON_COLLAPSE);
+    private final static LinearGraphAction EXPAND = new LinearGraphActionImpl(null, Type.BUTTON_EXPAND);
 
     @Nullable private final PrintElementWithGraphElement myAffectedElement;
     @NotNull private final Type myType;
